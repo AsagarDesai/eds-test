@@ -1,0 +1,42 @@
+.wideimage .wideimage-media {
+  width: 100%;
+  line-height: 0;
+}
+
+.wideimage .wideimage-link {
+  display: block;
+  width: 100%;
+  cursor: pointer;
+}
+
+.wideimage picture,
+.wideimage img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+/* Show mobile artwork by default, hide desktop. */
+.wideimage picture.wideimage-desktop {
+  display: none;
+}
+
+.wideimage picture.wideimage-mobile {
+  display: block;
+}
+
+/* On wider viewports show desktop artwork, hide mobile. */
+@media (width >= 900px) {
+  .wideimage picture.wideimage-desktop {
+    display: block;
+  }
+
+  .wideimage picture.wideimage-mobile {
+    display: none;
+  }
+}
+
+/* If only one picture is authored, always show it. */
+.wideimage .wideimage-media > picture:only-child {
+  display: block;
+}
