@@ -1,0 +1,171 @@
+.servicesteps {
+  position: relative;
+  overflow: hidden;
+  border-radius: 12px;
+  color: #fff;
+  background: linear-gradient(135deg, #0a7d5a 0%, #0f9d63 60%, #14b870 100%);
+}
+
+/* Content layer */
+.servicesteps .servicesteps-content {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+  padding: 32px 24px;
+}
+
+/* Left: logo + CTA buttons */
+.servicesteps .servicesteps-left {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 24px;
+}
+
+.servicesteps .servicesteps-logo img {
+  width: 120px;
+  height: auto;
+  display: block;
+}
+
+/* Show mobile logo by default, desktop on wider screens. */
+.servicesteps picture.servicesteps-logo-desktop {
+  display: none;
+}
+
+.servicesteps picture.servicesteps-logo-mobile {
+  display: block;
+}
+
+.servicesteps .servicesteps-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+}
+
+.servicesteps .servicesteps-button {
+  width: 100%;
+}
+
+.servicesteps .servicesteps-cta {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  justify-content: center;
+  width: 100%;
+  padding: 14px 28px;
+  border-radius: 999px;
+  font-weight: 700;
+  text-decoration: none;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.servicesteps .servicesteps-cta::after {
+  content: '\2192';
+  font-weight: 700;
+}
+
+.servicesteps .servicesteps-cta:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgb(0 0 0 / 25%);
+}
+
+.servicesteps .servicesteps-cta-primary {
+  background: #ffd200;
+  color: #131313;
+}
+
+.servicesteps .servicesteps-cta-secondary {
+  background: #fff;
+  color: #131313;
+}
+
+/* Right: heading + steps */
+.servicesteps .servicesteps-heading {
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 1.25;
+  margin-bottom: 24px;
+}
+
+.servicesteps .servicesteps-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.servicesteps .servicesteps-step {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.servicesteps .servicesteps-step-icon img {
+  width: 56px;
+  height: 56px;
+  object-fit: contain;
+  display: block;
+}
+
+.servicesteps .servicesteps-step-description {
+  font-size: 16px;
+  line-height: 1.4;
+}
+
+/* Desktop layout */
+@media (width >= 900px) {
+  .servicesteps picture.servicesteps-logo-desktop {
+    display: block;
+  }
+
+  .servicesteps picture.servicesteps-logo-mobile {
+    display: none;
+  }
+
+  .servicesteps .servicesteps-content {
+    flex-direction: row;
+    align-items: center;
+    gap: 48px;
+    padding: 56px 64px;
+  }
+
+  .servicesteps .servicesteps-left {
+    flex: 0 0 32%;
+  }
+
+  .servicesteps .servicesteps-right {
+    flex: 1;
+  }
+
+  .servicesteps .servicesteps-buttons {
+    width: auto;
+  }
+
+  .servicesteps .servicesteps-cta {
+    width: auto;
+  }
+
+  .servicesteps .servicesteps-logo img {
+    width: 171px;
+  }
+
+  .servicesteps .servicesteps-heading {
+    font-size: 32px;
+  }
+
+  .servicesteps .servicesteps-steps {
+    flex-direction: row;
+    justify-content: space-between;
+    gap: 32px;
+  }
+
+  .servicesteps .servicesteps-step {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    flex: 1;
+  }
+}
