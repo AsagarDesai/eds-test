@@ -3,7 +3,10 @@
   overflow: hidden;
   border-radius: 12px;
   color: #fff;
-  background: linear-gradient(135deg, #0a7d5a 0%, #0f9d63 60%, #14b870 100%);
+
+  /* Base teal with a left-to-right gradient, matching the source section. */
+  background-color: #0e8480;
+  background-image: linear-gradient(82deg, rgb(14 132 128 / 92%) 0%, rgb(9 115 112 / 70%) 60%, rgb(9 115 112 / 55%) 100%);
 }
 
 /* Content layer */
@@ -53,11 +56,12 @@
 .servicesteps .servicesteps-cta {
   display: inline-flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
   justify-content: center;
   width: 100%;
-  padding: 14px 28px;
-  border-radius: 999px;
+  padding: 12px 26px;
+  border-radius: 45px;
+  font-size: 15px;
   font-weight: 700;
   text-decoration: none;
   transition: transform 0.2s ease, box-shadow 0.2s ease;
@@ -68,33 +72,40 @@
   font-weight: 700;
 }
 
+/* Download CTAs use a downward arrow instead. */
+.servicesteps .servicesteps-cta-download::after {
+  content: '\2193';
+}
+
 .servicesteps .servicesteps-cta:hover {
   transform: translateY(-2px);
   box-shadow: 0 6px 16px rgb(0 0 0 / 25%);
 }
 
 .servicesteps .servicesteps-cta-primary {
-  background: #ffd200;
-  color: #131313;
+  background: #fcaf17;
+  color: #232426;
 }
 
+/* Secondary: transparent, white outline pill. */
 .servicesteps .servicesteps-cta-secondary {
-  background: #fff;
-  color: #131313;
+  background: transparent;
+  color: #fff;
+  border: 1.5px solid rgb(255 255 255 / 80%);
 }
 
 /* Right: heading + steps */
 .servicesteps .servicesteps-heading {
-  font-size: 24px;
+  font-size: 20px;
   font-weight: 700;
   line-height: 1.25;
-  margin-bottom: 24px;
+  margin-bottom: 28px;
 }
 
 .servicesteps .servicesteps-steps {
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: 28px;
 }
 
 .servicesteps .servicesteps-step {
@@ -103,15 +114,46 @@
   gap: 16px;
 }
 
+/* Circular ring holding the step icon, with a numbered badge on top. */
+.servicesteps .servicesteps-step-ring {
+  position: relative;
+  flex: 0 0 auto;
+  width: 96px;
+  height: 96px;
+  border: 1.5px solid rgb(255 255 255 / 70%);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.servicesteps .servicesteps-step-number {
+  position: absolute;
+  top: -4px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: #fff;
+  color: #0e8480;
+  font-size: 13px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
 .servicesteps .servicesteps-step-icon img {
-  width: 56px;
-  height: 56px;
+  width: 44px;
+  height: 44px;
   object-fit: contain;
   display: block;
 }
 
 .servicesteps .servicesteps-step-description {
   font-size: 16px;
+  font-weight: 500;
   line-height: 1.4;
 }
 
@@ -129,11 +171,11 @@
     flex-direction: row;
     align-items: center;
     gap: 48px;
-    padding: 56px 64px;
+    padding: 48px 64px;
   }
 
   .servicesteps .servicesteps-left {
-    flex: 0 0 32%;
+    flex: 0 0 30%;
   }
 
   .servicesteps .servicesteps-right {
@@ -153,13 +195,16 @@
   }
 
   .servicesteps .servicesteps-heading {
-    font-size: 32px;
+    font-size: 24px;
+    text-align: left;
+    margin-bottom: 32px;
   }
 
   .servicesteps .servicesteps-steps {
     flex-direction: row;
     justify-content: space-between;
-    gap: 32px;
+    align-items: flex-start;
+    gap: 40px;
   }
 
   .servicesteps .servicesteps-step {
@@ -167,5 +212,16 @@
     align-items: center;
     text-align: center;
     flex: 1;
+    gap: 20px;
+  }
+
+  .servicesteps .servicesteps-step-ring {
+    width: 110px;
+    height: 110px;
+  }
+
+  .servicesteps .servicesteps-step-icon img {
+    width: 50px;
+    height: 50px;
   }
 }

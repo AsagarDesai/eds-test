@@ -72,7 +72,15 @@ export default function decorate(block) {
     const buttons = document.createElement('div');
     buttons.className = 'servicesteps-buttons';
     ctas.forEach((cta, i) => {
-      cta.classList.add('servicesteps-cta', i === 0 ? 'servicesteps-cta-primary' : 'servicesteps-cta-secondary');
+      // Downloadable links (PDFs / download attr) get the outlined + arrow-down
+      // treatment; the first non-download CTA is the primary (yellow) button.
+      const isDownload = cta.hasAttribute('download') || /\.pdf(\?|$)/i.test(cta.href);
+      cta.classList.add('servicesteps-cta');
+      if (isDownload) {
+        cta.classList.add('servicesteps-cta-secondary', 'servicesteps-cta-download');
+      } else {
+        cta.classList.add(i === 0 ? 'servicesteps-cta-primary' : 'servicesteps-cta-secondary');
+      }
       // Open external / download links in a new tab.
       try {
         const url = new URL(cta.href, window.location.href);
@@ -107,20 +115,31 @@ export default function decorate(block) {
   if (steps.length) {
     const stepList = document.createElement('div');
     stepList.className = 'servicesteps-steps';
-    steps.forEach(({ pic, text }) => {
+    steps.forEach(({ pic, text }, index) => {
       const step = document.createElement('div');
       step.className = 'servicesteps-step';
       step.setAttribute('role', 'figure');
+
+      // Circular ring holding the icon, with a numbered badge on top.
+      const ring = document.createElement('div');
+      ring.className = 'servicesteps-step-ring';
+
+      const badge = document.createElement('span');
+      badge.className = 'servicesteps-step-number';
+      badge.setAttribute('aria-hidden', 'true');
+      badge.textContent = index + 1;
 
       const icon = document.createElement('div');
       icon.className = 'servicesteps-step-icon';
       icon.append(pic);
 
+      ring.append(badge, icon);
+
       const desc = document.createElement('div');
       desc.className = 'servicesteps-step-description';
       desc.textContent = text;
 
-      step.append(icon, desc);
+      step.append(ring, desc);
       stepList.append(step);
     });
     right.append(stepList);
