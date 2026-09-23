@@ -1,9 +1,8 @@
 .contactus-swapimagewithcta {
   display: flex;
   flex-direction: column;
+  width: 100%;
   background: #f8f8f8;
-  max-width: 1400px;
-  margin: 0 auto;
 }
 
 /* Media side */

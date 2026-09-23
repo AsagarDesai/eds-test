@@ -1,7 +1,5 @@
 .contactus-emailoutsourcing {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 24px;
+  width: 100%;
   color: #222;
 }
 
@@ -60,10 +58,6 @@
 
 /* Desktop: four columns */
 @media (width >= 900px) {
-  .contactus-emailoutsourcing {
-    padding: 40px 24px;
-  }
-
   .contactus-emailoutsourcing .contactus-emailoutsourcing-grid {
     grid-template-columns: repeat(4, 1fr);
     gap: 24px;
