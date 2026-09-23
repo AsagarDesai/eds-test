@@ -1,0 +1,119 @@
+.contactus-swapimagewithcta {
+  display: flex;
+  flex-direction: column;
+  background: #f8f8f8;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+/* Media side */
+.contactus-swapimagewithcta .contactus-swapimagewithcta-media {
+  line-height: 0;
+}
+
+.contactus-swapimagewithcta .contactus-swapimagewithcta-media picture,
+.contactus-swapimagewithcta .contactus-swapimagewithcta-media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* Show mobile artwork by default, desktop on wider screens. */
+.contactus-swapimagewithcta picture.contactus-swapimagewithcta-desktop {
+  display: none;
+}
+
+.contactus-swapimagewithcta picture.contactus-swapimagewithcta-mobile {
+  display: block;
+}
+
+/* Text side */
+.contactus-swapimagewithcta .contactus-swapimagewithcta-text {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 28px 24px 36px;
+}
+
+.contactus-swapimagewithcta .contactus-swapimagewithcta-title {
+  margin: 0 0 12px;
+  font-size: 28px;
+  font-weight: 700;
+  line-height: 1.2;
+  color: #222;
+}
+
+.contactus-swapimagewithcta .contactus-swapimagewithcta-subtitle {
+  margin: 0 0 24px;
+  font-size: 16px;
+  line-height: 1.6;
+  color: #444;
+}
+
+.contactus-swapimagewithcta .contactus-swapimagewithcta-cta {
+  display: inline-block;
+  padding: 14px 32px;
+  background: #6a1b9a;
+  color: #fff;
+  font-size: 15px;
+  font-weight: 700;
+  text-align: center;
+  text-decoration: none;
+  border-radius: 4px;
+  transition: background 0.2s ease;
+}
+
+.contactus-swapimagewithcta .contactus-swapimagewithcta-cta:hover {
+  background: #4a148c;
+}
+
+/* Mobile: full-width CTA button */
+.contactus-swapimagewithcta .contactus-swapimagewithcta-button {
+  width: 100%;
+}
+
+.contactus-swapimagewithcta .contactus-swapimagewithcta-button .contactus-swapimagewithcta-cta {
+  display: block;
+  width: 100%;
+}
+
+/* Desktop: image left, text right */
+@media (width >= 900px) {
+  .contactus-swapimagewithcta {
+    flex-direction: row;
+    align-items: stretch;
+  }
+
+  .contactus-swapimagewithcta picture.contactus-swapimagewithcta-desktop {
+    display: block;
+  }
+
+  .contactus-swapimagewithcta picture.contactus-swapimagewithcta-mobile {
+    display: none;
+  }
+
+  .contactus-swapimagewithcta .contactus-swapimagewithcta-media {
+    flex: 0 0 58%;
+  }
+
+  .contactus-swapimagewithcta .contactus-swapimagewithcta-text {
+    flex: 1;
+    padding: 40px 56px;
+  }
+
+  .contactus-swapimagewithcta .contactus-swapimagewithcta-title {
+    font-size: 36px;
+    margin-bottom: 16px;
+  }
+
+  .contactus-swapimagewithcta .contactus-swapimagewithcta-subtitle {
+    margin-bottom: 32px;
+  }
+
+  /* Inline (auto-width) button on desktop. */
+  .contactus-swapimagewithcta .contactus-swapimagewithcta-button .contactus-swapimagewithcta-cta {
+    display: inline-block;
+    width: auto;
+  }
+}
