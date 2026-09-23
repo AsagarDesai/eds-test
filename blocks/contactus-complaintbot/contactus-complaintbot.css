@@ -28,8 +28,9 @@
 
 /* Complaint panel CTA button */
 .contactus-complaintbot .contactus-complaintbot-cta {
-  display: inline-block;
+  display: block;
   box-sizing: border-box;
+  width: 100%;
   margin: 8px 0 16px;
   padding: 14px 40px;
   background: #4a1a7a;
@@ -95,6 +96,11 @@
 
   .contactus-complaintbot .contactus-complaintbot-complaint {
     flex: 1.3;
+  }
+
+  .contactus-complaintbot .contactus-complaintbot-cta {
+    display: inline-block;
+    width: auto;
   }
 
   .contactus-complaintbot .contactus-complaintbot-divider {
