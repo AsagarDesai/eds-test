@@ -53,6 +53,7 @@
 
 .contactus-swapimagewithcta .contactus-swapimagewithcta-cta {
   display: inline-block;
+  box-sizing: border-box;
   padding: 14px 32px;
   background: #6a1b9a;
   color: #fff;
