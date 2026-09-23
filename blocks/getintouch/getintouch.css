@@ -1,6 +1,7 @@
 .getintouch {
   position: relative;
   overflow: hidden;
+  width: 100%;
   color: #222;
 }
 
@@ -19,13 +20,12 @@
   display: block;
 }
 
-/* Content layer */
+/* Content layer. Horizontal insets come from the section wrapper; only the
+   vertical padding that gives the banner its height lives here. */
 .getintouch .getintouch-content {
   position: relative;
   z-index: 1;
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 48px 24px 64px;
+  padding: 48px 0 64px;
 }
 
 .getintouch .getintouch-eyebrow {
@@ -88,7 +88,7 @@
 /* Desktop layout */
 @media (width >= 900px) {
   .getintouch .getintouch-content {
-    padding: 72px 40px 96px;
+    padding: 72px 0 96px;
     min-height: 560px;
   }
 
