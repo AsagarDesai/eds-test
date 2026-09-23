@@ -4,9 +4,31 @@
   border-radius: 12px;
   color: #fff;
 
-  /* Base teal with a left-to-right gradient, matching the source section. */
+  /* Fallback teal shown until / when no background video is authored. */
   background-color: #0e8480;
-  background-image: linear-gradient(82deg, rgb(14 132 128 / 92%) 0%, rgb(9 115 112 / 70%) 60%, rgb(9 115 112 / 55%) 100%);
+}
+
+/* Background video layer */
+.servicesteps .servicesteps-media {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+}
+
+.servicesteps .servicesteps-video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* Teal gradient tint over the video, matching the source section. */
+.servicesteps .servicesteps-media::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: linear-gradient(82deg, rgb(14 132 128 / 88%) 0%, rgb(9 115 112 / 60%) 60%, rgb(9 115 112 / 45%) 100%);
 }
 
 /* Content layer */
@@ -55,6 +77,7 @@
 
 .servicesteps .servicesteps-cta {
   display: inline-flex;
+  box-sizing: border-box;
   align-items: center;
   gap: 10px;
   justify-content: center;
@@ -102,24 +125,30 @@
   margin-bottom: 28px;
 }
 
+/* Steps sit in a 3-column row (icon above text) on all viewports. */
 .servicesteps .servicesteps-steps {
   display: flex;
-  flex-direction: column;
-  gap: 28px;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
 }
 
 .servicesteps .servicesteps-step {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 16px;
+  text-align: center;
+  flex: 1;
+  gap: 12px;
 }
 
 /* Circular ring holding the step icon, with a numbered badge on top. */
 .servicesteps .servicesteps-step-ring {
   position: relative;
   flex: 0 0 auto;
-  width: 96px;
-  height: 96px;
+  width: 64px;
+  height: 64px;
   border: 1.5px solid rgb(255 255 255 / 70%);
   border-radius: 50%;
   display: flex;
@@ -127,32 +156,21 @@
   justify-content: center;
 }
 
+/* The step icon artwork already includes its own number, so the badge we
+   generate is hidden to avoid a duplicate. */
 .servicesteps .servicesteps-step-number {
-  position: absolute;
-  top: -4px;
-  left: 50%;
-  transform: translateX(-50%);
-  width: 26px;
-  height: 26px;
-  border-radius: 50%;
-  background: #fff;
-  color: #0e8480;
-  font-size: 13px;
-  font-weight: 700;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  display: none;
 }
 
 .servicesteps .servicesteps-step-icon img {
-  width: 44px;
-  height: 44px;
+  width: 30px;
+  height: 30px;
   object-fit: contain;
   display: block;
 }
 
 .servicesteps .servicesteps-step-description {
-  font-size: 16px;
+  font-size: 13px;
   font-weight: 500;
   line-height: 1.4;
 }
@@ -201,17 +219,10 @@
   }
 
   .servicesteps .servicesteps-steps {
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: flex-start;
     gap: 40px;
   }
 
   .servicesteps .servicesteps-step {
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-    flex: 1;
     gap: 20px;
   }
 
@@ -223,5 +234,9 @@
   .servicesteps .servicesteps-step-icon img {
     width: 50px;
     height: 50px;
+  }
+
+  .servicesteps .servicesteps-step-description {
+    font-size: 16px;
   }
 }

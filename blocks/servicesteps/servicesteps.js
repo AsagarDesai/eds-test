@@ -6,12 +6,13 @@
  * contains, so authors can reorder rows and add or remove steps freely.
  *
  *   Row 1 (two cells) → | desktop logo image | mobile logo image |
+ *   A row with a link to an .mp4            → background video (authorable)
  *   A row with only text (no link, no image) → heading
  *   A row with a single link                 → CTA button (in author order)
  *   A row with an image AND text             → a step (icon + description)
  *
  * Renders a left container (logo + CTA buttons) and a right container
- * (heading + steps) over a gradient background provided by CSS.
+ * (heading + steps) over an authored background video.
  */
 export default function decorate(block) {
   const rows = [...block.children];
@@ -24,6 +25,7 @@ export default function decorate(block) {
 
   // --- Classify remaining rows --------------------------------------------
   let heading = '';
+  let videoSrc = '';
   const ctas = [];
   const steps = [];
 
@@ -35,6 +37,9 @@ export default function decorate(block) {
     if (pic && text) {
       // image + text → a step (icon + description)
       steps.push({ pic, text });
+    } else if (link && /\.mp4(\?|$)/i.test(link.href)) {
+      // link to a video file → background video
+      videoSrc = link.href;
     } else if (link) {
       // single link → CTA button
       ctas.push(link);
@@ -46,6 +51,25 @@ export default function decorate(block) {
 
   // --- Build the new structure --------------------------------------------
   block.textContent = '';
+
+  // Background video layer (authored). Falls back to the CSS gradient/color
+  // when no video is provided.
+  if (videoSrc) {
+    const media = document.createElement('div');
+    media.className = 'servicesteps-media';
+    const video = document.createElement('video');
+    video.className = 'servicesteps-video';
+    video.src = videoSrc;
+    video.autoplay = true;
+    video.loop = true;
+    video.muted = true;
+    video.playsInline = true;
+    video.setAttribute('muted', '');
+    video.setAttribute('playsinline', '');
+    video.setAttribute('aria-hidden', 'true');
+    media.append(video);
+    block.append(media);
+  }
 
   const content = document.createElement('div');
   content.className = 'servicesteps-content';
