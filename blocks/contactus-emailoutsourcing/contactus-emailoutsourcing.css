@@ -1,0 +1,71 @@
+.contactus-emailoutsourcing {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 24px;
+  color: #222;
+}
+
+.contactus-emailoutsourcing .contactus-emailoutsourcing-cin {
+  margin-bottom: 32px;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+
+/* Card grid */
+.contactus-emailoutsourcing .contactus-emailoutsourcing-grid {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 20px;
+}
+
+.contactus-emailoutsourcing .contactus-emailoutsourcing-card {
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  padding: 18px 20px;
+  background: #fff;
+}
+
+.contactus-emailoutsourcing .contactus-emailoutsourcing-card p {
+  margin: 0 0 8px;
+  font-size: 15px;
+  line-height: 1.4;
+  color: #555;
+}
+
+.contactus-emailoutsourcing .contactus-emailoutsourcing-email {
+  text-decoration: none;
+  color: #222;
+}
+
+.contactus-emailoutsourcing .contactus-emailoutsourcing-email b {
+  font-size: 16px;
+  font-weight: 700;
+  overflow-wrap: break-word;
+}
+
+.contactus-emailoutsourcing .contactus-emailoutsourcing-email:hover b {
+  color: #7b2ff7;
+}
+
+/* Tablet: two columns */
+@media (width >= 600px) {
+  .contactus-emailoutsourcing .contactus-emailoutsourcing-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* Desktop: four columns */
+@media (width >= 900px) {
+  .contactus-emailoutsourcing {
+    padding: 40px 24px;
+  }
+
+  .contactus-emailoutsourcing .contactus-emailoutsourcing-grid {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 24px;
+  }
+}
