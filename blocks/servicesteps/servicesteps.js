@@ -58,8 +58,11 @@ export default function decorate(block) {
     const pic = lastPicture(row);
     const link = row.querySelector('a[href]');
     const text = row.textContent.trim();
+    // A two-cell row with text is a step even while its image cell is empty,
+    // so it never gets mistaken for the heading.
+    const isStepRow = row.children.length > 1 && text && !link;
 
-    if (pic && text) {
+    if ((pic && text) || isStepRow) {
       // image + text → a step (icon + description)
       steps.push({ pic, text });
     } else if (pic) {
@@ -176,15 +179,18 @@ export default function decorate(block) {
       step.setAttribute('role', 'figure');
 
       // The authored step artwork already includes its ring and number badge.
-      const icon = document.createElement('div');
-      icon.className = 'servicesteps-step-icon';
-      icon.append(pic);
+      if (pic) {
+        const icon = document.createElement('div');
+        icon.className = 'servicesteps-step-icon';
+        icon.append(pic);
+        step.append(icon);
+      }
 
       const desc = document.createElement('div');
       desc.className = 'servicesteps-step-description';
       desc.textContent = text;
 
-      step.append(icon, desc);
+      step.append(desc);
       stepList.append(step);
     });
     right.append(stepList);
