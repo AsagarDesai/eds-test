@@ -1,0 +1,986 @@
+.budgetcalculatorpbc {
+  --pbc-orange: #feb940;
+  --pbc-cream: #fee6b7;
+  --pbc-cta: #fcaf17;
+  --pbc-link: rgb(244 120 56);
+  --pbc-red: rgb(237 28 36);
+
+  position: relative;
+  width: 100%;
+  color: #fff;
+  font-family: manrope, var(--body-font-family);
+  background-color: #2f2c4d;
+  background-image: var(--bg-image-mobile);
+  background-size: 100% 100%;
+}
+
+/* Headings use the block's typeface rather than the site heading font. */
+.budgetcalculatorpbc :is(h2, h3, h4) {
+  font-family: inherit;
+}
+
+.budgetcalculatorpbc[aria-busy='true'] {
+  cursor: progress;
+}
+
+/* Only the active screen is shown; all stay in the DOM to keep their state. */
+.budgetcalculatorpbc .budgetcalculatorpbc-screen {
+  display: none;
+  box-sizing: border-box;
+  padding: 24px 16px 32px;
+}
+
+.budgetcalculatorpbc[data-screen='1'] .budgetcalculatorpbc-screen[data-screen='1'],
+.budgetcalculatorpbc[data-screen='2'] .budgetcalculatorpbc-screen[data-screen='2'],
+.budgetcalculatorpbc[data-screen='3'] .budgetcalculatorpbc-screen[data-screen='3'] {
+  display: grid;
+  gap: 24px;
+}
+
+.budgetcalculatorpbc .budgetcalculatorpbc-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* ---- Shared intro (screens 1 and 2) ---- */
+.budgetcalculatorpbc .budgetcalculatorpbc-title {
+  margin: 0 0 8px;
+  color: var(--pbc-orange);
+  font-size: 32px;
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -1px;
+}
+
+.budgetcalculatorpbc .budgetcalculatorpbc-title:focus {
+  outline: none;
+}
+
+.budgetcalculatorpbc .budgetcalculatorpbc-highlight {
+  color: var(--pbc-cream);
+  font-weight: inherit;
+}
+
+.budgetcalculatorpbc .budgetcalculatorpbc-subtitle {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.budgetcalculatorpbc .budgetcalculatorpbc-error {
+  margin: 6px 0 0;
+  color: #f00;
+  font-size: 12px;
+  line-height: 1.3;
+}
+
+.budgetcalculatorpbc .budgetcalculatorpbc-error:empty {
+  display: none;
+}
+
+/* ---- Radio groups ---- */
+.budgetcalculatorpbc .budgetcalculatorpbc-radio-group {
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.budgetcalculatorpbc .budgetcalculatorpbc-radio-title {
+  margin-bottom: 12px;
+  padding: 0;
+  font-size: 20px;
+  line-height: 1.3;
+}
+
+.budgetcalculatorpbc .budgetcalculatorpbc-radio-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 24px;
+}
+
+.budgetcalculatorpbc .budgetcalculatorpbc-radio {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.budgetcalculatorpbc .budgetcalculatorpbc-radio input[type='radio'] {
+  appearance: none;
+  flex: 0 0 auto;
+  width: 20px;
+  height: 20px;
+  margin: 0;
+  border: 1px solid #fff;
+  border-radius: 50%;
+  background: rgb(255 255 255 / 20%);
+  cursor: pointer;
+}
+
+.budgetcalculatorpbc .budgetcalculatorpbc-radio input[type='radio']:checked {
+  background: radial-gradient(circle, var(--pbc-orange) 0 4px, #fff 5px);
+}
+
+.budgetcalculatorpbc .budgetcalculatorpbc-radio input[type='radio']:focus-visible {
+  outline: 2px solid var(--pbc-cream);
+  outline-offset: 2px;
+}
+
+.budgetcalculatorpbc .budgetcalculatorpbc-radio input:checked + .budgetcalculatorpbc-radio-text {
+  font-weight: 700;
+}
+
+/* ---- Buttons ---- */
+.budgetcalculatorpbc .budgetcalculatorpbc-cta {
+  display: inline-flex;
+  box-sizing: border-box;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  height: 52px;
+  padding: 0 24px;
+  border: 0;
+  border-radius: 45px;
+  background: var(--pbc-cta);
+  color: #232426;
+  font: inherit;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.budgetcalculatorpbc .budgetcalculatorpbc-cta::after {
+  content: '\2192';
+  font-size: 20px;
+  line-height: 1;
+}
+
+.budgetcalculatorpbc .budgetcalculatorpbc-cta:disabled {
+  background: #fff;
+  cursor: not-allowed;
+}
+
+.budgetcalculatorpbc .budgetcalculatorpbc-cta:focus-visible {
+  outline: 2px solid var(--pbc-cream);
+  outline-offset: 3px;
+}
+
+/* ---- Screen 1: project details ---- */
+.budgetcalculatorpbc .budgetcalculatorpbc-details-form {
+  display: grid;
+  gap: 28px;
+}
+
+.budgetcalculatorpbc .budgetcalculatorpbc-step {
+  display: none;
+  margin: 0;
+  color: #fff7e8;
+  font-size: 16px;
+}
+
+.budgetcalculatorpbc .budgetcalculatorpbc-area-label {
+  display: block;
+  margin-bottom: 12px;
+  font-size: 20px;
+  line-height: 1.3;
+}
+
+.budgetcalculatorpbc .budgetcalculatorpbc-area-input {
+  box-sizing: border-box;
+  width: 100%;
+  height: 52px;
+  padding: 14px 16px;
+  border: 1px solid #fff;
+  border-radius: 6px;
+  background: rgb(255 255 255 / 20%);
+  color: #fff;
+  font: inherit;
+  font-size: 16px;
+}
+
+.budgetcalculatorpbc .budgetcalculatorpbc-area-input::placeholder {
+  color: #fff;
+  font-size: 12px;
+}
+
+.budgetcalculatorpbc .budgetcalculatorpbc-area-input[aria-invalid='true'] {
+  border-color: #f00;
+}
+
+/* ---- Screen 2: lead form ---- */
+.budgetcalculatorpbc .budgetcalculatorpbc-lead-form {
+  display: grid;
+  gap: 20px;
+}
+
+.budgetcalculatorpbc .budgetcalculatorpbc-fields {
+  display: grid;
+  gap: 20px;
+}
+
+.budgetcalculatorpbc .budgetcalculatorpbc-control {
+  position: relative;
+}
+
+.budgetcalculatorpbc .budgetcalculatorpbc-control input {
+  box-sizing: border-box;
+  width: 100%;
+  height: 56px;
+  padding: 0 15px;
+  border: 1px solid #75787b;
+  border-radius: 6px;
+  background: #fff;
+  color: #303030;
+  font: inherit;
+  font-size: 16px;
+}
+
+.budgetcalculatorpbc .budgetcalculatorpbc-control input::placeholder {
+  color: #75787b;
+}
+
+.budgetcalculatorpbc .budgetcalculatorpbc-control:has(.budgetcalculatorpbc-prefix) input {
+  padding-left: 64px;
+}
+
+.budgetcalculatorpbc .budgetcalculatorpbc-prefix {
+  position: absolute;
+  top: 50%;
+  left: 12px;
+  padding-right: 12px;
+  border-right: 1px solid #c4c4c4;
+  color: #303030;
+  font-size: 16px;
+  transform: translateY(-50%);
+}
+
+/* Floating label sits on the top border once focused or filled. */
+.budgetcalculatorpbc .budgetcalculatorpbc-float-label {
+  position: absolute;
+  top: 0;
+  left: 12px;
+  padding: 0 4px;
+  background: #fff;
+  color: #555;
+  font-size: 12px;
+  line-height: 1.2;
+  opacity: 0;
+  transform: translateY(-50%);
+  pointer-events: none;
+  transition: opacity 0.15s ease;
+}
+
+.budgetcalculatorpbc .budgetcalculatorpbc-control:focus-within .budgetcalculatorpbc-float-label,
+.budgetcalculatorpbc .budgetcalculatorpbc-control:has(input:not(:placeholder-shown)) .budgetcalculatorpbc-float-label {
+  opacity: 1;
+}
+
+.budgetcalculatorpbc .budgetcalculatorpbc-field.is-invalid input {
+  border-color: var(--pbc-red);
+}
+
+.budgetcalculatorpbc .budgetcalculatorpbc-lead .budgetcalculatorpbc-error {
+  color: var(--pbc-red);
+  font-size: 14px;
+}
+
+.budgetcalculatorpbc .budgetcalculatorpbc-lead .budgetcalculatorpbc-mark {
+  color: var(--pbc-red);
+}
+
+.budgetcalculatorpbc .budgetcalculatorpbc-checkbox {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.budgetcalculatorpbc .budgetcalculatorpbc-checkbox input[type='checkbox'] {
+  width: 18px;
+  height: 18px;
+  margin: 0;
+  accent-color: #fff;
+}
+
+.budgetcalculatorpbc .budgetcalculatorpbc-lead-questions {
+  display: grid;
+  gap: 16px;
+}
+
+.budgetcalculatorpbc .budgetcalculatorpbc-lead .budgetcalculatorpbc-radio-title {
+  margin-bottom: 8px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.budgetcalculatorpbc .budgetcalculatorpbc-lead .budgetcalculatorpbc-radio-options {
+  gap: 8px 16px;
+}
+
+.budgetcalculatorpbc .budgetcalculatorpbc-lead .budgetcalculatorpbc-radio {
+  gap: 6px;
+  font-size: 13px;
+}
+
+.budgetcalculatorpbc .budgetcalculatorpbc-lead .budgetcalculatorpbc-radio input[type='radio'] {
+  width: 18px;
+  height: 18px;
+  background: transparent;
+}
+
+.budgetcalculatorpbc .budgetcalculatorpbc-consent {
+  margin: 0;
+  font-size: 11px;
+  line-height: 1.55;
+}
+
+.budgetcalculatorpbc .budgetcalculatorpbc-consent a {
+  color: #4c8dff;
+  text-decoration: underline;
+}
+
+.budgetcalculatorpbc .budgetcalculatorpbc-cta-submit {
+  background: linear-gradient(rgb(254 201 64), rgb(255 153 0));
+  color: #1e1e1e;
+}
+
+/* ---- Screen 3: recommendations ---- */
+.budgetcalculatorpbc .budgetcalculatorpbc-again {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: #fff;
+  font: inherit;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.budgetcalculatorpbc .budgetcalculatorpbc-again::before {
+  content: '\2190';
+  font-size: 20px;
+  font-weight: 400;
+  line-height: 1;
+}
+
+.budgetcalculatorpbc .budgetcalculatorpbc-again:focus-visible {
+  outline: 2px solid var(--pbc-cream);
+  outline-offset: 3px;
+}
+
+.budgetcalculatorpbc .budgetcalculatorpbc-info-column > .budgetcalculatorpbc-again,
+.budgetcalculatorpbc .budgetcalculatorpbc-info-description {
+  display: none;
+}
+
+.budgetcalculatorpbc .budgetcalculatorpbc-info {
+  text-align: center;
+}
+
+.budgetcalculatorpbc .budgetcalculatorpbc-info-title {
+  margin: 0 0 4px;
+  color: #fff;
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.budgetcalculatorpbc .budgetcalculatorpbc-info-title:focus {
+  outline: none;
+}
+
+.budgetcalculatorpbc .budgetcalculatorpbc-info-subtitle {
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.budgetcalculatorpbc .budgetcalculatorpbc-info-description p {
+  margin: 0 0 16px;
+  font-size: 16px;
+}
+
+.budgetcalculatorpbc .budgetcalculatorpbc-info-description ul {
+  margin: 0;
+  padding-left: 18px;
+}
+
+.budgetcalculatorpbc .budgetcalculatorpbc-info-description li {
+  margin-bottom: 10px;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.4;
+}
+
+/* Carousel: cards stack in one grid cell; mobile nav sits underneath. */
+.budgetcalculatorpbc .budgetcalculatorpbc-carousel {
+  display: grid;
+  grid-template: 'stack stack stack' auto 'prev again next' auto / 36px 1fr 36px;
+  align-items: center;
+  gap: 16px 8px;
+}
+
+.budgetcalculatorpbc .budgetcalculatorpbc-stack {
+  grid-area: stack;
+  position: relative;
+  display: grid;
+  margin-bottom: 16px;
+}
+
+.budgetcalculatorpbc .budgetcalculatorpbc-nav {
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border: 2px solid #fff;
+  border-radius: 50%;
+  background: none;
+  color: #fff;
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.budgetcalculatorpbc .budgetcalculatorpbc-nav-prev {
+  grid-area: prev;
+}
+
+.budgetcalculatorpbc .budgetcalculatorpbc-nav-next {
+  grid-area: next;
+}
+
+.budgetcalculatorpbc .budgetcalculatorpbc-nav-prev::before {
+  content: '\2190';
+}
+
+.budgetcalculatorpbc .budgetcalculatorpbc-nav-next::before {
+  content: '\2192';
+}
+
+.budgetcalculatorpbc .budgetcalculatorpbc-nav:focus-visible {
+  outline: 2px solid var(--pbc-cream);
+  outline-offset: 3px;
+}
+
+.budgetcalculatorpbc .budgetcalculatorpbc-nav:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.budgetcalculatorpbc .budgetcalculatorpbc-carousel.is-single .budgetcalculatorpbc-nav {
+  visibility: hidden;
+}
+
+.budgetcalculatorpbc .budgetcalculatorpbc-mobile-nav {
+  grid-area: again;
+  justify-self: center;
+}
+
+.budgetcalculatorpbc .budgetcalculatorpbc-results-error {
+  margin: 0;
+  padding: 24px;
+  text-align: center;
+}
+
+/* ---- Result card ---- */
+.budgetcalculatorpbc .budgetcalculatorpbc-card {
+  grid-area: 1 / 1;
+  justify-self: center;
+  box-sizing: border-box;
+  display: grid;
+  grid-template:
+    'title title' auto
+    'media name' auto
+    'media view' 1fr
+    'prices prices' auto
+    'disclaimer disclaimer' auto
+    'products products' auto
+    'includes includes' auto
+    'pdf pdf' auto / 57px minmax(0, 1fr);
+  align-content: start;
+  column-gap: 12px;
+  width: min(340px, 100%);
+  padding: 12px;
+  border-radius: 8px;
+  background: #fff;
+  color: #000;
+  box-shadow: 0 4px 14px rgb(0 0 0 / 18%);
+  transition: transform 0.25s ease, width 0.25s ease;
+}
+
+.budgetcalculatorpbc .budgetcalculatorpbc-card[data-position='0'] {
+  z-index: 3;
+}
+
+/* Cards behind the active one are taken out of flow and sized to it, so the
+   active card alone sets the stack height; they peek out below it. */
+.budgetcalculatorpbc .budgetcalculatorpbc-card[data-position='1'],
+.budgetcalculatorpbc .budgetcalculatorpbc-card[data-position='2'] {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  overflow: hidden;
+}
+
+.budgetcalculatorpbc .budgetcalculatorpbc-card[data-position='1'] {
+  z-index: 2;
+  width: min(314px, 92%);
+  transform: translate(-50%, 8px);
+}
+
+.budgetcalculatorpbc .budgetcalculatorpbc-card[data-position='2'] {
+  z-index: 1;
+  width: min(288px, 85%);
+  transform: translate(-50%, 16px);
+}
+
+.budgetcalculatorpbc .budgetcalculatorpbc-card[data-position='hidden'] {
+  display: none;
+}
+
+/* Cards peeking out behind the active one show only their edge. */
+.budgetcalculatorpbc .budgetcalculatorpbc-card:not([data-position='0']) > * {
+  visibility: hidden;
+}
+
+.budgetcalculatorpbc .budgetcalculatorpbc-card-title {
+  grid-area: title;
+  justify-self: center;
+  margin: 0 0 12px;
+  background: linear-gradient(90deg, #52307c 0%, var(--pbc-link) 100%);
+  background-clip: text;
+  color: transparent;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.budgetcalculatorpbc .budgetcalculatorpbc-card-media {
+  grid-area: media;
+}
+
+.budgetcalculatorpbc .budgetcalculatorpbc-card-media img {
+  display: block;
+  width: 57px;
+  height: 68px;
+  object-fit: contain;
+}
+
+.budgetcalculatorpbc .budgetcalculatorpbc-card-name {
+  grid-area: name;
+  margin: 0 0 4px;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.budgetcalculatorpbc .budgetcalculatorpbc-view {
+  color: var(--pbc-link);
+  font-size: 12px;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.budgetcalculatorpbc .budgetcalculatorpbc-view:hover {
+  text-decoration: underline;
+}
+
+.budgetcalculatorpbc .budgetcalculatorpbc-card > .budgetcalculatorpbc-view {
+  grid-area: view;
+}
+
+.budgetcalculatorpbc .budgetcalculatorpbc-prices {
+  grid-area: prices;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 10px 12px;
+  margin: 16px 0 0;
+  font-size: 11px;
+}
+
+.budgetcalculatorpbc .budgetcalculatorpbc-prices dt {
+  color: #2f2f2f;
+  font-weight: 500;
+}
+
+.budgetcalculatorpbc .budgetcalculatorpbc-prices dd {
+  margin: 0;
+  color: #000;
+  font-weight: 700;
+  text-align: right;
+}
+
+.budgetcalculatorpbc .budgetcalculatorpbc-card .budgetcalculatorpbc-mark {
+  color: var(--pbc-red);
+}
+
+.budgetcalculatorpbc .budgetcalculatorpbc-products {
+  grid-area: products;
+  min-width: 0;
+}
+
+.budgetcalculatorpbc .budgetcalculatorpbc-products-title {
+  margin: 16px 0 10px;
+  color: #000;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.budgetcalculatorpbc .budgetcalculatorpbc-products-list {
+  display: flex;
+  gap: 12px;
+  margin: 0;
+  padding: 2px 2px 8px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  list-style: none;
+}
+
+.budgetcalculatorpbc .budgetcalculatorpbc-product {
+  flex: 0 0 128px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 8px;
+  border-radius: 5px;
+  box-shadow: 0 0 6px rgb(0 0 0 / 15%);
+  text-align: center;
+  scroll-snap-align: start;
+}
+
+.budgetcalculatorpbc .budgetcalculatorpbc-product-name {
+  margin: 0;
+  color: #2f2f2f;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.2;
+  text-transform: capitalize;
+}
+
+.budgetcalculatorpbc .budgetcalculatorpbc-product-qty {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: auto;
+}
+
+.budgetcalculatorpbc .budgetcalculatorpbc-product-qty img {
+  width: 40px;
+  height: 49px;
+  object-fit: contain;
+}
+
+.budgetcalculatorpbc .budgetcalculatorpbc-product-amount {
+  margin: 0;
+  font-size: 10px;
+  line-height: 1.3;
+}
+
+.budgetcalculatorpbc .budgetcalculatorpbc-product-amount strong {
+  display: block;
+  font-size: 14px;
+  white-space: nowrap;
+}
+
+.budgetcalculatorpbc .budgetcalculatorpbc-disclaimer {
+  grid-area: disclaimer;
+  margin: 12px 0 0;
+  color: #555;
+  font-size: 10px;
+  line-height: 1.4;
+}
+
+.budgetcalculatorpbc .budgetcalculatorpbc-disclaimer .budgetcalculatorpbc-mark {
+  margin-right: 2px;
+  font-size: 13px;
+}
+
+.budgetcalculatorpbc .budgetcalculatorpbc-card-includes {
+  grid-area: includes;
+  margin-top: 12px;
+  color: #4c4c4c;
+}
+
+.budgetcalculatorpbc .budgetcalculatorpbc-card-includes p {
+  margin: 0 0 6px;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.budgetcalculatorpbc .budgetcalculatorpbc-card-includes ul {
+  margin: 0;
+  padding-left: 18px;
+}
+
+.budgetcalculatorpbc .budgetcalculatorpbc-card-includes li {
+  margin-bottom: 6px;
+  font-size: 12px;
+  line-height: 1.35;
+}
+
+.budgetcalculatorpbc .budgetcalculatorpbc-card-includes b,
+.budgetcalculatorpbc .budgetcalculatorpbc-card-includes strong {
+  font-weight: 400;
+}
+
+.budgetcalculatorpbc .budgetcalculatorpbc-pdf {
+  grid-area: pdf;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 12px;
+  padding-top: 16px;
+  border-top: 1px solid #c4c4c4;
+}
+
+.budgetcalculatorpbc .budgetcalculatorpbc-pdf p {
+  flex: 1;
+  margin: 0;
+  color: #000;
+  font-size: 11px;
+  font-weight: 500;
+}
+
+.budgetcalculatorpbc .budgetcalculatorpbc-pdf-cta {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  border: 1px solid #000;
+  border-radius: 45px;
+  color: #000;
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.budgetcalculatorpbc .budgetcalculatorpbc-pdf-cta::after {
+  content: '\2913';
+  font-size: 16px;
+  line-height: 1;
+}
+
+/* ---- Desktop ---- */
+@media (width >= 900px) {
+  .budgetcalculatorpbc {
+    background-image: var(--bg-image-desktop);
+  }
+
+  .budgetcalculatorpbc .budgetcalculatorpbc-screen {
+    min-height: 584px;
+    padding: 56px 64px;
+  }
+
+  .budgetcalculatorpbc[data-screen='1'] .budgetcalculatorpbc-screen[data-screen='1'],
+  .budgetcalculatorpbc[data-screen='2'] .budgetcalculatorpbc-screen[data-screen='2'] {
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+    align-items: center;
+    gap: 48px;
+  }
+
+  .budgetcalculatorpbc .budgetcalculatorpbc-title {
+    margin-bottom: 40px;
+    font-size: clamp(40px, 4vw, 64px);
+    line-height: 1.1;
+    letter-spacing: -2px;
+  }
+
+  .budgetcalculatorpbc .budgetcalculatorpbc-subtitle {
+    max-width: 660px;
+    font-size: 24px;
+  }
+
+  .budgetcalculatorpbc .budgetcalculatorpbc-step {
+    display: block;
+  }
+
+  .budgetcalculatorpbc .budgetcalculatorpbc-details-form {
+    gap: 40px;
+  }
+
+  .budgetcalculatorpbc .budgetcalculatorpbc-radio-title,
+  .budgetcalculatorpbc .budgetcalculatorpbc-area-label {
+    margin-bottom: 15px;
+    font-size: 28px;
+  }
+
+  .budgetcalculatorpbc .budgetcalculatorpbc-radio-options {
+    gap: 12px 40px;
+  }
+
+  .budgetcalculatorpbc .budgetcalculatorpbc-radio {
+    font-size: 20px;
+  }
+
+  .budgetcalculatorpbc .budgetcalculatorpbc-area-input {
+    width: 320px;
+  }
+
+  .budgetcalculatorpbc .budgetcalculatorpbc-area-input::placeholder {
+    font-size: 16px;
+  }
+
+  .budgetcalculatorpbc .budgetcalculatorpbc-cta {
+    justify-self: start;
+    width: auto;
+  }
+
+  /* Screen 2 */
+  .budgetcalculatorpbc[data-screen='2'] .budgetcalculatorpbc-screen[data-screen='2'] {
+    grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+  }
+
+  .budgetcalculatorpbc .budgetcalculatorpbc-lead-form {
+    gap: 24px;
+  }
+
+  .budgetcalculatorpbc .budgetcalculatorpbc-fields {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 28px;
+  }
+
+  .budgetcalculatorpbc .budgetcalculatorpbc-lead-questions {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 24px;
+  }
+
+  .budgetcalculatorpbc .budgetcalculatorpbc-lead .budgetcalculatorpbc-radio-title {
+    font-size: 16px;
+  }
+
+  .budgetcalculatorpbc .budgetcalculatorpbc-lead .budgetcalculatorpbc-radio {
+    font-size: 14px;
+  }
+
+  .budgetcalculatorpbc .budgetcalculatorpbc-cta-submit {
+    justify-self: end;
+  }
+
+  /* Screen 3 */
+  .budgetcalculatorpbc[data-screen='3'] .budgetcalculatorpbc-screen[data-screen='3'] {
+    grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+    align-items: start;
+    gap: 32px;
+    padding: 40px;
+  }
+
+  .budgetcalculatorpbc .budgetcalculatorpbc-info-column > .budgetcalculatorpbc-again {
+    display: inline-flex;
+  }
+
+  .budgetcalculatorpbc .budgetcalculatorpbc-info {
+    margin-top: 72px;
+    text-align: left;
+  }
+
+  .budgetcalculatorpbc .budgetcalculatorpbc-info-title {
+    margin-bottom: 16px;
+    font-size: 36px;
+  }
+
+  .budgetcalculatorpbc .budgetcalculatorpbc-info-subtitle {
+    max-width: 400px;
+    margin-bottom: 32px;
+    font-size: 18px;
+  }
+
+  .budgetcalculatorpbc .budgetcalculatorpbc-info-description {
+    display: block;
+  }
+
+  .budgetcalculatorpbc .budgetcalculatorpbc-carousel {
+    grid-template: 'prev stack next' auto / 36px minmax(0, 1fr) 36px;
+    gap: 16px;
+  }
+
+  .budgetcalculatorpbc .budgetcalculatorpbc-mobile-nav {
+    display: none;
+  }
+
+  .budgetcalculatorpbc .budgetcalculatorpbc-card {
+    grid-template:
+      'title title' auto
+      'media name' auto
+      'media prices' auto
+      'media view' auto
+      'products products' auto
+      'disclaimer disclaimer' auto
+      'pdf pdf' auto / 103px minmax(0, 1fr);
+    column-gap: 24px;
+    width: min(554px, 100%);
+    padding: 24px;
+  }
+
+  .budgetcalculatorpbc .budgetcalculatorpbc-card[data-position='1'] {
+    width: min(513px, 92.6%);
+  }
+
+  .budgetcalculatorpbc .budgetcalculatorpbc-card[data-position='2'] {
+    width: min(491px, 88.6%);
+  }
+
+  .budgetcalculatorpbc .budgetcalculatorpbc-card-title {
+    margin-bottom: 20px;
+    font-size: 16px;
+    font-weight: 800;
+  }
+
+  .budgetcalculatorpbc .budgetcalculatorpbc-card-media img {
+    width: 103px;
+    height: 124px;
+  }
+
+  .budgetcalculatorpbc .budgetcalculatorpbc-card-name {
+    margin-bottom: 12px;
+    font-size: 20px;
+  }
+
+  .budgetcalculatorpbc .budgetcalculatorpbc-prices {
+    margin: 0 0 8px;
+    font-size: 12px;
+  }
+
+  .budgetcalculatorpbc .budgetcalculatorpbc-products-list {
+    flex-wrap: wrap;
+    overflow: visible;
+  }
+
+  .budgetcalculatorpbc .budgetcalculatorpbc-product {
+    flex-basis: 135px;
+  }
+
+  .budgetcalculatorpbc .budgetcalculatorpbc-disclaimer {
+    font-size: 11px;
+  }
+
+  .budgetcalculatorpbc .budgetcalculatorpbc-card-includes {
+    display: none;
+  }
+
+  .budgetcalculatorpbc .budgetcalculatorpbc-pdf {
+    gap: 24px;
+    padding-top: 19px;
+  }
+
+  .budgetcalculatorpbc .budgetcalculatorpbc-pdf p {
+    font-size: 12px;
+  }
+
+  .budgetcalculatorpbc .budgetcalculatorpbc-pdf-cta {
+    padding: 10px 25px;
+    font-size: 16px;
+  }
+}
