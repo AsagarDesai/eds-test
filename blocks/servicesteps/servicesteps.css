@@ -1,14 +1,15 @@
 .servicesteps {
   position: relative;
   overflow: hidden;
+  width: 100%;
   border-radius: 12px;
   color: #fff;
 
-  /* Fallback teal shown until / when no background video is authored. */
+  /* Fallback teal shown until / when no background media is authored. */
   background-color: #0e8480;
 }
 
-/* Background video layer */
+/* Background layer: authored image(s), with the video stacked on top. */
 .servicesteps .servicesteps-media {
   position: absolute;
   inset: 0;
@@ -16,6 +17,13 @@
   overflow: hidden;
 }
 
+.servicesteps .servicesteps-media picture,
+.servicesteps .servicesteps-video {
+  position: absolute;
+  inset: 0;
+}
+
+.servicesteps .servicesteps-media img,
 .servicesteps .servicesteps-video {
   width: 100%;
   height: 100%;
@@ -23,12 +31,16 @@
   display: block;
 }
 
-/* Teal gradient tint over the video, matching the source section. */
+.servicesteps picture.servicesteps-bg-desktop {
+  display: none;
+}
+
+/* Teal gradient tint over the background, matching the source section. */
 .servicesteps .servicesteps-media::after {
   content: '';
   position: absolute;
   inset: 0;
-  background-image: linear-gradient(82deg, rgb(14 132 128 / 88%) 0%, rgb(9 115 112 / 60%) 60%, rgb(9 115 112 / 45%) 100%);
+  background: linear-gradient(82deg, rgb(14 132 128 / 60%), rgb(9 115 112 / 0%) 93.55%);
 }
 
 /* Content layer */
@@ -122,6 +134,7 @@
   font-size: 20px;
   font-weight: 700;
   line-height: 1.25;
+  text-align: center;
   margin-bottom: 28px;
 }
 
@@ -143,28 +156,18 @@
   gap: 12px;
 }
 
-/* Circular ring holding the step icon, with a numbered badge on top. */
-.servicesteps .servicesteps-step-ring {
-  position: relative;
+/* Step artwork (ring + number badge + icon) is authored as one image. */
+.servicesteps .servicesteps-step-icon {
   flex: 0 0 auto;
-  width: 64px;
-  height: 64px;
-  border: 1.5px solid rgb(255 255 255 / 70%);
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  width: 56px;
+  height: 62px;
+  line-height: 0;
 }
 
-/* The step icon artwork already includes its own number, so the badge we
-   generate is hidden to avoid a duplicate. */
-.servicesteps .servicesteps-step-number {
-  display: none;
-}
-
+.servicesteps .servicesteps-step-icon picture,
 .servicesteps .servicesteps-step-icon img {
-  width: 30px;
-  height: 30px;
+  width: 100%;
+  height: 100%;
   object-fit: contain;
   display: block;
 }
@@ -177,11 +180,13 @@
 
 /* Desktop layout */
 @media (width >= 900px) {
-  .servicesteps picture.servicesteps-logo-desktop {
+  .servicesteps picture.servicesteps-logo-desktop,
+  .servicesteps picture.servicesteps-bg-desktop {
     display: block;
   }
 
-  .servicesteps picture.servicesteps-logo-mobile {
+  .servicesteps picture.servicesteps-logo-mobile,
+  .servicesteps picture.servicesteps-bg-mobile {
     display: none;
   }
 
@@ -214,7 +219,6 @@
 
   .servicesteps .servicesteps-heading {
     font-size: 24px;
-    text-align: left;
     margin-bottom: 32px;
   }
 
@@ -226,14 +230,9 @@
     gap: 20px;
   }
 
-  .servicesteps .servicesteps-step-ring {
-    width: 110px;
-    height: 110px;
-  }
-
-  .servicesteps .servicesteps-step-icon img {
-    width: 50px;
-    height: 50px;
+  .servicesteps .servicesteps-step-icon {
+    width: 70px;
+    height: 78px;
   }
 
   .servicesteps .servicesteps-step-description {
