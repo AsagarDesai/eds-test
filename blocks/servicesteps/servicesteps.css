@@ -5,11 +5,11 @@
   border-radius: 12px;
   color: #fff;
 
-  /* Fallback teal shown until / when no background video is authored. */
+  /* Fallback teal shown until / when no background media is authored. */
   background-color: #0e8480;
 }
 
-/* Background video layer */
+/* Background layer: authored image(s), with the video stacked on top. */
 .servicesteps .servicesteps-media {
   position: absolute;
   inset: 0;
@@ -17,6 +17,13 @@
   overflow: hidden;
 }
 
+.servicesteps .servicesteps-media picture,
+.servicesteps .servicesteps-video {
+  position: absolute;
+  inset: 0;
+}
+
+.servicesteps .servicesteps-media img,
 .servicesteps .servicesteps-video {
   width: 100%;
   height: 100%;
@@ -24,7 +31,11 @@
   display: block;
 }
 
-/* Teal gradient tint over the video, matching the source section. */
+.servicesteps picture.servicesteps-bg-desktop {
+  display: none;
+}
+
+/* Teal gradient tint over the background, matching the source section. */
 .servicesteps .servicesteps-media::after {
   content: '';
   position: absolute;
@@ -148,12 +159,16 @@
 /* Step artwork (ring + number badge + icon) is authored as one image. */
 .servicesteps .servicesteps-step-icon {
   flex: 0 0 auto;
+  width: 56px;
+  height: 62px;
   line-height: 0;
 }
 
+.servicesteps .servicesteps-step-icon picture,
 .servicesteps .servicesteps-step-icon img {
-  width: 56px;
-  height: auto;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
   display: block;
 }
 
@@ -165,11 +180,13 @@
 
 /* Desktop layout */
 @media (width >= 900px) {
-  .servicesteps picture.servicesteps-logo-desktop {
+  .servicesteps picture.servicesteps-logo-desktop,
+  .servicesteps picture.servicesteps-bg-desktop {
     display: block;
   }
 
-  .servicesteps picture.servicesteps-logo-mobile {
+  .servicesteps picture.servicesteps-logo-mobile,
+  .servicesteps picture.servicesteps-bg-mobile {
     display: none;
   }
 
@@ -213,8 +230,9 @@
     gap: 20px;
   }
 
-  .servicesteps .servicesteps-step-icon img {
+  .servicesteps .servicesteps-step-icon {
     width: 70px;
+    height: 78px;
   }
 
   .servicesteps .servicesteps-step-description {

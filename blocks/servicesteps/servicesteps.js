@@ -6,37 +6,67 @@
  * contains, so authors can reorder rows and add or remove steps freely.
  *
  *   Row 1 (two cells) → | desktop logo image | mobile logo image |
+ *   A row with only images (no text)         → background image
+ *                                              | desktop image | mobile image |
  *   A row with a link to an .mp4            → background video (authorable)
  *   A row with only text (no link, no image) → heading
  *   A row with a single link                 → CTA button (in author order)
  *   A row with an image AND text             → a step (icon + description)
  *
+ * If a cell holds several images, the last one wins, so an image added next
+ * to an existing one replaces it. If only one of a desktop/mobile pair is
+ * authored, it is shown at every viewport.
+ *
  * Renders a left container (logo + CTA buttons) and a right container
- * (heading + steps) over an authored background video.
+ * (heading + steps) over an authored background image and/or video.
  */
+function lastPicture(el) {
+  const pics = el ? el.querySelectorAll('picture') : [];
+  return pics.length ? pics[pics.length - 1] : null;
+}
+
+/**
+ * Tags a desktop/mobile picture pair with viewport classes. A picture without
+ * a partner gets no viewport class, so it stays visible everywhere.
+ */
+function tagPair(desktop, mobile, prefix) {
+  if (desktop && mobile) {
+    desktop.classList.add(`${prefix}-desktop`);
+    mobile.classList.add(`${prefix}-mobile`);
+  }
+  return [desktop, mobile].filter(Boolean);
+}
+
 export default function decorate(block) {
   const rows = [...block.children];
 
   // --- Row 1: logo (desktop | mobile) -------------------------------------
   const logoRow = rows.shift();
   const logoCells = logoRow ? [...logoRow.children] : [];
-  const desktopLogo = logoCells[0] ? logoCells[0].querySelector('picture') : null;
-  const mobileLogo = logoCells[1] ? logoCells[1].querySelector('picture') : null;
+  const desktopLogo = lastPicture(logoCells[0]);
+  const mobileLogo = lastPicture(logoCells[1]);
 
   // --- Classify remaining rows --------------------------------------------
   let heading = '';
   let videoSrc = '';
+  let bgDesktop = null;
+  let bgMobile = null;
   const ctas = [];
   const steps = [];
 
   rows.forEach((row) => {
-    const pic = row.querySelector('picture');
+    const pic = lastPicture(row);
     const link = row.querySelector('a[href]');
     const text = row.textContent.trim();
 
     if (pic && text) {
       // image + text → a step (icon + description)
       steps.push({ pic, text });
+    } else if (pic) {
+      // images only → background image (desktop | mobile)
+      const cells = [...row.children];
+      bgDesktop = lastPicture(cells[0]);
+      bgMobile = cells.length > 1 ? lastPicture(cells[1]) : null;
     } else if (link && /\.mp4(\?|$)/i.test(link.href)) {
       // link to a video file → background video
       videoSrc = link.href;
@@ -52,22 +82,29 @@ export default function decorate(block) {
   // --- Build the new structure --------------------------------------------
   block.textContent = '';
 
-  // Background video layer (authored). Falls back to the CSS gradient/color
-  // when no video is provided.
-  if (videoSrc) {
+  // Background layer: authored image(s) underneath an optional video. Falls
+  // back to the CSS background colour when neither is provided.
+  const bgPics = tagPair(bgDesktop, bgMobile, 'servicesteps-bg');
+  if (bgPics.length || videoSrc) {
     const media = document.createElement('div');
     media.className = 'servicesteps-media';
-    const video = document.createElement('video');
-    video.className = 'servicesteps-video';
-    video.src = videoSrc;
-    video.autoplay = true;
-    video.loop = true;
-    video.muted = true;
-    video.playsInline = true;
-    video.setAttribute('muted', '');
-    video.setAttribute('playsinline', '');
-    video.setAttribute('aria-hidden', 'true');
-    media.append(video);
+    bgPics.forEach((pic) => {
+      pic.classList.add('servicesteps-bg');
+      media.append(pic);
+    });
+    if (videoSrc) {
+      const video = document.createElement('video');
+      video.className = 'servicesteps-video';
+      video.src = videoSrc;
+      video.autoplay = true;
+      video.loop = true;
+      video.muted = true;
+      video.playsInline = true;
+      video.setAttribute('muted', '');
+      video.setAttribute('playsinline', '');
+      video.setAttribute('aria-hidden', 'true');
+      media.append(video);
+    }
     block.append(media);
   }
 
@@ -78,17 +115,11 @@ export default function decorate(block) {
   const left = document.createElement('div');
   left.className = 'servicesteps-left';
 
-  if (desktopLogo || mobileLogo) {
+  const logos = tagPair(desktopLogo, mobileLogo, 'servicesteps-logo');
+  if (logos.length) {
     const logoWrap = document.createElement('div');
     logoWrap.className = 'servicesteps-logo';
-    if (desktopLogo) {
-      desktopLogo.classList.add('servicesteps-logo-desktop');
-      logoWrap.append(desktopLogo);
-    }
-    if (mobileLogo) {
-      mobileLogo.classList.add('servicesteps-logo-mobile');
-      logoWrap.append(mobileLogo);
-    }
+    logoWrap.append(...logos);
     left.append(logoWrap);
   }
 
