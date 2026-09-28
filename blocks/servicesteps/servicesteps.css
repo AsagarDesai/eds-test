@@ -1,6 +1,7 @@
 .servicesteps {
   position: relative;
   overflow: hidden;
+  width: 100%;
   border-radius: 12px;
   color: #fff;
 
@@ -28,7 +29,7 @@
   content: '';
   position: absolute;
   inset: 0;
-  background-image: linear-gradient(82deg, rgb(14 132 128 / 88%) 0%, rgb(9 115 112 / 60%) 60%, rgb(9 115 112 / 45%) 100%);
+  background: linear-gradient(82deg, rgb(14 132 128 / 60%), rgb(9 115 112 / 0%) 93.55%);
 }
 
 /* Content layer */
@@ -122,6 +123,7 @@
   font-size: 20px;
   font-weight: 700;
   line-height: 1.25;
+  text-align: center;
   margin-bottom: 28px;
 }
 
@@ -143,29 +145,15 @@
   gap: 12px;
 }
 
-/* Circular ring holding the step icon, with a numbered badge on top. */
-.servicesteps .servicesteps-step-ring {
-  position: relative;
+/* Step artwork (ring + number badge + icon) is authored as one image. */
+.servicesteps .servicesteps-step-icon {
   flex: 0 0 auto;
-  width: 64px;
-  height: 64px;
-  border: 1.5px solid rgb(255 255 255 / 70%);
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-/* The step icon artwork already includes its own number, so the badge we
-   generate is hidden to avoid a duplicate. */
-.servicesteps .servicesteps-step-number {
-  display: none;
+  line-height: 0;
 }
 
 .servicesteps .servicesteps-step-icon img {
-  width: 30px;
-  height: 30px;
-  object-fit: contain;
+  width: 56px;
+  height: auto;
   display: block;
 }
 
@@ -214,7 +202,6 @@
 
   .servicesteps .servicesteps-heading {
     font-size: 24px;
-    text-align: left;
     margin-bottom: 32px;
   }
 
@@ -226,14 +213,8 @@
     gap: 20px;
   }
 
-  .servicesteps .servicesteps-step-ring {
-    width: 110px;
-    height: 110px;
-  }
-
   .servicesteps .servicesteps-step-icon img {
-    width: 50px;
-    height: 50px;
+    width: 70px;
   }
 
   .servicesteps .servicesteps-step-description {

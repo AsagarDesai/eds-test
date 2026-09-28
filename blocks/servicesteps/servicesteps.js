@@ -139,31 +139,21 @@ export default function decorate(block) {
   if (steps.length) {
     const stepList = document.createElement('div');
     stepList.className = 'servicesteps-steps';
-    steps.forEach(({ pic, text }, index) => {
+    steps.forEach(({ pic, text }) => {
       const step = document.createElement('div');
       step.className = 'servicesteps-step';
       step.setAttribute('role', 'figure');
 
-      // Circular ring holding the icon, with a numbered badge on top.
-      const ring = document.createElement('div');
-      ring.className = 'servicesteps-step-ring';
-
-      const badge = document.createElement('span');
-      badge.className = 'servicesteps-step-number';
-      badge.setAttribute('aria-hidden', 'true');
-      badge.textContent = index + 1;
-
+      // The authored step artwork already includes its ring and number badge.
       const icon = document.createElement('div');
       icon.className = 'servicesteps-step-icon';
       icon.append(pic);
-
-      ring.append(badge, icon);
 
       const desc = document.createElement('div');
       desc.className = 'servicesteps-step-description';
       desc.textContent = text;
 
-      step.append(ring, desc);
+      step.append(icon, desc);
       stepList.append(step);
     });
     right.append(stepList);
