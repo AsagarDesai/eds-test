@@ -432,11 +432,15 @@
   gap: 16px 8px;
 }
 
+/* Every card is positioned in the stack; its height follows the active card
+   (set from JS) so the cards behind it peek out evenly below. */
 .budgetcalculatorpbc .budgetcalculatorpbc-stack {
+  --pbc-ease: cubic-bezier(0.22, 0.61, 0.36, 1);
+
   grid-area: stack;
   position: relative;
-  display: grid;
   margin-bottom: 16px;
+  transition: height 0.45s var(--pbc-ease);
 }
 
 .budgetcalculatorpbc .budgetcalculatorpbc-nav {
@@ -495,8 +499,9 @@
 
 /* ---- Result card ---- */
 .budgetcalculatorpbc .budgetcalculatorpbc-card {
-  grid-area: 1 / 1;
-  justify-self: center;
+  position: absolute;
+  top: 0;
+  left: 50%;
   box-sizing: border-box;
   display: grid;
   grid-template:
@@ -516,22 +521,31 @@
   background: #fff;
   color: #000;
   box-shadow: 0 4px 14px rgb(0 0 0 / 18%);
-  transition: transform 0.25s ease, width 0.25s ease;
+  transform: translate(-50%, 0);
+  transition:
+    transform 0.45s var(--pbc-ease),
+    width 0.45s var(--pbc-ease),
+    opacity 0.35s ease,
+    visibility 0s linear 0s;
+}
+
+.budgetcalculatorpbc .budgetcalculatorpbc-card > * {
+  transition: opacity 0.3s ease 0.15s;
 }
 
 .budgetcalculatorpbc .budgetcalculatorpbc-card[data-position='0'] {
   z-index: 3;
 }
 
-/* Cards behind the active one are taken out of flow and sized to it, so the
-   active card alone sets the stack height; they peek out below it. */
-.budgetcalculatorpbc .budgetcalculatorpbc-card[data-position='1'],
-.budgetcalculatorpbc .budgetcalculatorpbc-card[data-position='2'] {
-  position: absolute;
-  top: 0;
+/* Cards behind the active one match its height and show only their edge. */
+.budgetcalculatorpbc .budgetcalculatorpbc-card:not([data-position='0']) {
   bottom: 0;
-  left: 50%;
   overflow: hidden;
+}
+
+.budgetcalculatorpbc .budgetcalculatorpbc-card:not([data-position='0']) > * {
+  opacity: 0;
+  transition-delay: 0s;
 }
 
 .budgetcalculatorpbc .budgetcalculatorpbc-card[data-position='1'] {
@@ -546,13 +560,30 @@
   transform: translate(-50%, 16px);
 }
 
-.budgetcalculatorpbc .budgetcalculatorpbc-card[data-position='hidden'] {
-  display: none;
+/* Waiting below the stack: a card entering the stack (the next card behind,
+   or the previous card coming back to the front) rises from here, and the
+   card leaving the front sinks back here. */
+.budgetcalculatorpbc .budgetcalculatorpbc-card[data-position='out'] {
+  z-index: 0;
+  width: min(288px, 85%);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transform: translate(-50%, 56px);
+  transition:
+    transform 0.45s var(--pbc-ease),
+    width 0.45s var(--pbc-ease),
+    opacity 0.35s ease,
+    visibility 0s linear 0.45s;
 }
 
-/* Cards peeking out behind the active one show only their edge. */
-.budgetcalculatorpbc .budgetcalculatorpbc-card:not([data-position='0']) > * {
-  visibility: hidden;
+@media (prefers-reduced-motion: reduce) {
+  .budgetcalculatorpbc .budgetcalculatorpbc-stack,
+  .budgetcalculatorpbc .budgetcalculatorpbc-card,
+  .budgetcalculatorpbc .budgetcalculatorpbc-card > *,
+  .budgetcalculatorpbc .budgetcalculatorpbc-card[data-position='out'] {
+    transition: none;
+  }
 }
 
 .budgetcalculatorpbc .budgetcalculatorpbc-card-title {
@@ -761,16 +792,104 @@
   padding: 10px 16px;
   border: 1px solid #000;
   border-radius: 45px;
+  background: transparent;
   color: #000;
+  font: inherit;
   font-size: 13px;
   font-weight: 600;
-  text-decoration: none;
+  cursor: pointer;
 }
 
 .budgetcalculatorpbc .budgetcalculatorpbc-pdf-cta::after {
   content: '\2913';
   font-size: 16px;
   line-height: 1;
+}
+
+.budgetcalculatorpbc .budgetcalculatorpbc-pdf-cta:disabled {
+  opacity: 0.6;
+  cursor: progress;
+}
+
+/* ---- PDF loader / result panel ---- */
+.budgetcalculatorpbc .budgetcalculatorpbc-pdf-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  background: rgb(20 18 40 / 60%);
+}
+
+.budgetcalculatorpbc .budgetcalculatorpbc-pdf-panel {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  width: min(360px, 100%);
+  padding: 28px 24px;
+  border-radius: 12px;
+  background: #fff;
+  color: #222;
+  text-align: center;
+}
+
+.budgetcalculatorpbc .budgetcalculatorpbc-pdf-panel:focus {
+  outline: none;
+}
+
+.budgetcalculatorpbc .budgetcalculatorpbc-spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid #eee;
+  border-top-color: var(--pbc-cta);
+  border-radius: 50%;
+  animation: budgetcalculatorpbc-spin 0.8s linear infinite;
+}
+
+@keyframes budgetcalculatorpbc-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.budgetcalculatorpbc .budgetcalculatorpbc-pdf-status {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.budgetcalculatorpbc .budgetcalculatorpbc-pdf-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+}
+
+.budgetcalculatorpbc .budgetcalculatorpbc-pdf-action {
+  display: inline-flex;
+  box-sizing: border-box;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding: 0 20px;
+  border: 1px solid #232426;
+  border-radius: 45px;
+  background: #fff;
+  color: #232426;
+  font: inherit;
+  font-size: 15px;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.budgetcalculatorpbc .budgetcalculatorpbc-pdf-open {
+  border-color: var(--pbc-cta);
+  background: var(--pbc-cta);
 }
 
 /* ---- Desktop ---- */
@@ -928,7 +1047,8 @@
     width: min(513px, 92.6%);
   }
 
-  .budgetcalculatorpbc .budgetcalculatorpbc-card[data-position='2'] {
+  .budgetcalculatorpbc .budgetcalculatorpbc-card[data-position='2'],
+  .budgetcalculatorpbc .budgetcalculatorpbc-card[data-position='out'] {
     width: min(491px, 88.6%);
   }
 

@@ -32,8 +32,20 @@
  *   Calculate Again | …   Title | …   Subtitle | …   Description | rich text + list
  *   Card Title | …   Cost Label | … {area} …   Painting Area Label | … {area} x {factor} …
  *   Per Sqft Label | …   View Product | …   Products Title | …   Required Label | …
- *   Disclaimer | …   PDF Text | …   PDF CTA | …   PDF Link | fallback URL
- *   Results Error | …
+ *   Disclaimer | …   PDF Text | …   PDF CTA | …   Results Error | …
+ *
+ * PDF — generated in the browser from the card whose Download PDF was clicked
+ *   Logo | image   Greeting | Dear   Default Name | Customer   Header Text | …
+ *   Mobile Label | …   Email Label | …   Badge | Recommended Solution
+ *   Product Subtitle | …   Cost Label | Total cost   Steps Title | …
+ *   Step Label | STEP   Quantity Label | …   Coat Labels | COAT | COATS
+ *   Layer Labels | PRIMER | PUTTY | TOP COAT   Disclaimer | …   Phone | …
+ *   Call Text | … {phone}   Why Title | …   How Title | …   Plans Title | …
+ *   Why Item | icon | title | description   (repeat; same for How Item)
+ *   Plan | icon | name | "Included" + list, "Warranty" + list   (repeat)
+ *   Plans Call Text | … {phone} …   File Name | …   Systems | selected | all
+ *   Loading Text | …   Ready Text | …   Open Text | …   Share Text | …
+ *   Close Text | …   Error Text | …
  */
 
 const ASSET_HOST = 'https://www.asianpaints.com';
@@ -94,14 +106,14 @@ function toAssetUrl(path, page) {
 
 function splitSteps(rows) {
   const groups = {
-    shared: [], 1: [], 2: [], 3: [],
+    shared: [], 1: [], 2: [], 3: [], pdf: [],
   };
   let current = 'shared';
   rows.forEach((row) => {
     const text = row.textContent.trim();
-    const marker = row.children.length <= 1 && text.match(/^step\s*(\d)$/i);
+    const marker = row.children.length <= 1 && text.match(/^(?:step\s*(\d)|(pdf))$/i);
     if (marker) {
-      [, current] = marker;
+      current = marker[1] || 'pdf';
       return;
     }
     (groups[current] || groups.shared).push(row);
@@ -109,10 +121,13 @@ function splitSteps(rows) {
   return groups;
 }
 
-// Reads `key | value [| value]` rows. Repeatable keys (Question, Field) are
-// collected as lists; everything else keeps the last authored value.
+// Reads `key | value [| value]` rows. Repeatable keys (Question, Field and
+// the PDF's Why Item / How Item / Plan) are collected as lists; everything
+// else keeps the last authored value.
 function readRows(rows) {
-  const cfg = { questions: [], fields: [] };
+  const cfg = {
+    questions: [], fields: [], 'why-item': [], 'how-item': [], plan: [],
+  };
   rows.forEach((row) => {
     const cells = [...row.children];
     if (cells.length < 2) return;
@@ -125,8 +140,15 @@ function readRows(rows) {
       cfg.fields.push({ label: value.textContent.trim(), placeholder: cells[2] ? cells[2].textContent.trim() : '' });
     } else if (key === 'background') {
       cfg.background = cells.slice(1).map((c) => c.querySelector('img')).filter(Boolean);
+    } else if (key in cfg && Array.isArray(cfg[key])) {
+      // | Why Item / How Item / Plan | icon | title | description (rich) |
+      cfg[key].push({
+        icon: value.querySelector('img'),
+        title: cells[2] ? cells[2].textContent.trim() : '',
+        body: cells[3] || null,
+      });
     } else {
-      cfg[key] = { text: value.textContent.trim(), cell: value };
+      cfg[key] = { text: value.textContent.trim(), cell: value, cells: cells.slice(1) };
     }
   });
   return cfg;
@@ -389,7 +411,7 @@ function parseStep(raw) {
   };
 }
 
-function buildScreen3(cfg) {
+function buildScreen3(cfg, onPdf) {
   const screen = el('section', 'budgetcalculatorpbc-screen budgetcalculatorpbc-results');
   screen.dataset.screen = '3';
 
@@ -440,7 +462,6 @@ function buildScreen3(cfg) {
     disclaimer: copy(cfg, 'disclaimer', 'The total estimated product cost may vary based on the chosen shade and finish. Labour cost may vary depending on your location.'),
     pdfText: copy(cfg, 'pdf-text', 'Download the PDF to get more details about the painting process & products.'),
     pdfCta: copy(cfg, 'pdf-cta', 'Download PDF'),
-    pdfLink: cfg['pdf-link'] ? (cfg['pdf-link'].cell.querySelector('a')?.href || cfg['pdf-link'].text) : '',
     error: copy(cfg, 'results-error', 'We couldn’t load your recommendations. Please try again.'),
   };
 
@@ -521,33 +542,41 @@ function buildScreen3(cfg) {
       card.append(includes);
     }
 
-    const pdfHref = system.pdfUrl || system.pdfPath || system.pdfLink || L.pdfLink;
-    if (pdfHref) {
-      const pdf = el('div', 'budgetcalculatorpbc-pdf');
-      pdf.append(el('p', '', system.pdfText || L.pdfText));
-      const link = el('a', 'budgetcalculatorpbc-pdf-cta');
-      link.href = /^https?:/.test(pdfHref) ? pdfHref : toAssetUrl(pdfHref);
-      link.target = '_blank';
-      link.rel = 'noopener noreferrer';
-      link.append(el('span', '', system.pdfCtaText || L.pdfCta));
-      pdf.append(link);
-      card.append(pdf);
-    }
+    // Download PDF: generates a PDF from this card's recommendation.
+    const pdf = el('div', 'budgetcalculatorpbc-pdf');
+    pdf.append(el('p', '', system.pdfText || L.pdfText));
+    const pdfButton = el('button', 'budgetcalculatorpbc-pdf-cta');
+    pdfButton.type = 'button';
+    pdfButton.append(el('span', '', system.pdfCtaText || L.pdfCta));
+    pdfButton.addEventListener('click', () => onPdf(system, pdfButton));
+    pdf.append(pdfButton);
+    card.append(pdf);
     return card;
   }
 
   let index = 0;
   let cards = [];
 
-  // Position every card relative to the active one; the two after it peek
-  // out beneath it, the rest are hidden. Inactive cards are inert.
+  // The active card sets the stack height; the cards behind it are sized to
+  // match so they peek out evenly beneath it.
+  const sizer = new ResizeObserver(([entry]) => {
+    stack.style.height = `${entry.target.offsetHeight}px`;
+  });
+
+  // Position every card relative to the active one: the two after it peek
+  // out beneath it and the rest wait "out" below the stack. Moving between
+  // these states is animated in CSS, so the incoming card rises from the
+  // bottom of the stack. Inactive cards are inert.
   function show(i) {
     index = Math.max(0, Math.min(i, cards.length - 1));
+    sizer.disconnect();
     cards.forEach((card, n) => {
       const offset = n - index;
-      card.dataset.position = offset >= 0 && offset < 3 ? String(offset) : 'hidden';
+      card.dataset.position = offset >= 0 && offset < 3 ? String(offset) : 'out';
       card.inert = offset !== 0;
     });
+    if (cards[index]) sizer.observe(cards[index]);
+    else stack.style.height = '';
     prev.disabled = index === 0;
     next.disabled = index >= cards.length - 1;
     status.textContent = cards.length ? `${index + 1} of ${cards.length}` : '';
@@ -586,7 +615,7 @@ function buildScreen3(cfg) {
   }
 
   return {
-    screen, againButtons: [again, aside.querySelector('.budgetcalculatorpbc-again')], render, renderError,
+    screen, againButtons: [again, aside.querySelector('.budgetcalculatorpbc-again')], render, renderError, labels: L,
   };
 }
 
@@ -642,9 +671,31 @@ function markFormDone() {
 export default function decorate(block) {
   const groups = splitSteps([...block.children]);
   const shared = readRows(groups.shared);
+  const pdfConfig = readRows(groups.pdf);
+  // The lead's contact details personalise the PDF. They are kept in memory
+  // only (never stored), so a PDF made after a skipped form is generic.
+  let lead = null;
+  let results = { systems: [], area: '' };
+  let step3 = null;
+
+  // Download PDF on a card: the PDF module and its libraries load on demand.
+  async function onPdf(system, button) {
+    const { default: downloadPdf } = await import('./pdf.js');
+    downloadPdf({
+      block,
+      button,
+      system,
+      systems: results.systems,
+      area: results.area,
+      config: pdfConfig,
+      labels: step3.labels,
+      lead,
+    });
+  }
+
   const step1 = buildScreen1(readRows(groups[1]));
   const step2 = buildScreen2(readRows(groups[2]));
-  const step3 = buildScreen3(readRows(groups[3]));
+  step3 = buildScreen3(readRows(groups[3]), onPdf);
 
   const endpoint = copy(shared, 'endpoint', DEFAULT_ENDPOINT);
   const useSample = copy(shared, 'sample-data-fallback').toLowerCase() === 'true';
@@ -661,7 +712,9 @@ export default function decorate(block) {
     button.disabled = true;
     block.setAttribute('aria-busy', 'true');
     try {
-      step3.render(await fetchSystems(endpoint, answers, useSample), answers.area);
+      const systems = await fetchSystems(endpoint, answers, useSample);
+      results = { systems, area: answers.area };
+      step3.render(systems, answers.area);
     } catch (err) {
       step3.renderError();
     } finally {
@@ -682,6 +735,7 @@ export default function decorate(block) {
     e.preventDefault();
     if (!step2.validate()) return;
     markFormDone();
+    lead = step2.data();
     // Integration hook: the lead data is handed to whoever listens for it.
     block.dispatchEvent(new CustomEvent('budgetcalculatorpbc:lead', {
       bubbles: true, detail: { ...step2.data(), ...step1.answers() },
