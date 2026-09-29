@@ -432,15 +432,16 @@
   gap: 16px 8px;
 }
 
-/* Every card is positioned in the stack; its height follows the active card
-   (set from JS) so the cards behind it peek out evenly below. */
+/* Every card is positioned in the stack, and the stack is as tall as the
+   tallest card (set from JS), so changing cards never resizes the layout. */
 .budgetcalculatorpbc .budgetcalculatorpbc-stack {
   --pbc-ease: cubic-bezier(0.22, 0.61, 0.36, 1);
+  --pbc-depth-1: 0.924;
+  --pbc-depth-2: 0.847;
 
   grid-area: stack;
   position: relative;
   margin-bottom: 16px;
-  transition: height 0.45s var(--pbc-ease);
 }
 
 .budgetcalculatorpbc .budgetcalculatorpbc-nav {
@@ -501,6 +502,7 @@
 .budgetcalculatorpbc .budgetcalculatorpbc-card {
   position: absolute;
   top: 0;
+  bottom: 0;
   left: 50%;
   box-sizing: border-box;
   display: grid;
@@ -521,10 +523,13 @@
   background: #fff;
   color: #000;
   box-shadow: 0 4px 14px rgb(0 0 0 / 18%);
+
+  /* Depth comes from scaling around the bottom edge, never from width, so a
+     card's content never re-wraps while it animates. */
   transform: translate(-50%, 0);
+  transform-origin: 50% 100%;
   transition:
     transform 0.45s var(--pbc-ease),
-    width 0.45s var(--pbc-ease),
     opacity 0.35s ease,
     visibility 0s linear 0s;
 }
@@ -537,9 +542,8 @@
   z-index: 3;
 }
 
-/* Cards behind the active one match its height and show only their edge. */
+/* Cards behind the active one show only their edge. */
 .budgetcalculatorpbc .budgetcalculatorpbc-card:not([data-position='0']) {
-  bottom: 0;
   overflow: hidden;
 }
 
@@ -550,14 +554,12 @@
 
 .budgetcalculatorpbc .budgetcalculatorpbc-card[data-position='1'] {
   z-index: 2;
-  width: min(314px, 92%);
-  transform: translate(-50%, 8px);
+  transform: translate(-50%, 8px) scale(var(--pbc-depth-1));
 }
 
 .budgetcalculatorpbc .budgetcalculatorpbc-card[data-position='2'] {
   z-index: 1;
-  width: min(288px, 85%);
-  transform: translate(-50%, 16px);
+  transform: translate(-50%, 16px) scale(var(--pbc-depth-2));
 }
 
 /* Waiting below the stack: a card entering the stack (the next card behind,
@@ -565,20 +567,22 @@
    card leaving the front sinks back here. */
 .budgetcalculatorpbc .budgetcalculatorpbc-card[data-position='out'] {
   z-index: 0;
-  width: min(288px, 85%);
   opacity: 0;
   visibility: hidden;
   pointer-events: none;
-  transform: translate(-50%, 56px);
+  transform: translate(-50%, 56px) scale(var(--pbc-depth-2));
   transition:
     transform 0.45s var(--pbc-ease),
-    width 0.45s var(--pbc-ease),
     opacity 0.35s ease,
     visibility 0s linear 0.45s;
 }
 
+/* While measuring, cards take their natural height. */
+.budgetcalculatorpbc .budgetcalculatorpbc-stack.is-measuring .budgetcalculatorpbc-card {
+  bottom: auto;
+}
+
 @media (prefers-reduced-motion: reduce) {
-  .budgetcalculatorpbc .budgetcalculatorpbc-stack,
   .budgetcalculatorpbc .budgetcalculatorpbc-card,
   .budgetcalculatorpbc .budgetcalculatorpbc-card > *,
   .budgetcalculatorpbc .budgetcalculatorpbc-card[data-position='out'] {
@@ -769,6 +773,7 @@
 .budgetcalculatorpbc .budgetcalculatorpbc-pdf {
   grid-area: pdf;
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: 10px;
   margin-top: 12px;
@@ -800,54 +805,40 @@
   cursor: pointer;
 }
 
-.budgetcalculatorpbc .budgetcalculatorpbc-pdf-cta::after {
+.budgetcalculatorpbc .budgetcalculatorpbc-pdf-icon::before {
   content: '\2913';
   font-size: 16px;
   line-height: 1;
 }
 
-.budgetcalculatorpbc .budgetcalculatorpbc-pdf-cta:disabled {
-  opacity: 0.6;
+/* On iOS the finished PDF opens from the same button. */
+.budgetcalculatorpbc .budgetcalculatorpbc-pdf-cta.is-ready {
+  border-color: var(--pbc-cta);
+  background: var(--pbc-cta);
+}
+
+.budgetcalculatorpbc .budgetcalculatorpbc-pdf-cta.is-ready .budgetcalculatorpbc-pdf-icon::before {
+  content: '\2197';
+}
+
+/* Small loader next to the download icon while the PDF is prepared. */
+.budgetcalculatorpbc .budgetcalculatorpbc-pdf-spinner {
+  display: none;
+  box-sizing: border-box;
+  width: 14px;
+  height: 14px;
+  border: 2px solid rgb(0 0 0 / 20%);
+  border-top-color: #000;
+  border-radius: 50%;
+  animation: budgetcalculatorpbc-spin 0.7s linear infinite;
+}
+
+.budgetcalculatorpbc .budgetcalculatorpbc-pdf-cta.is-loading {
   cursor: progress;
 }
 
-/* ---- PDF loader / result panel ---- */
-.budgetcalculatorpbc .budgetcalculatorpbc-pdf-overlay {
-  position: absolute;
-  inset: 0;
-  z-index: 10;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 24px;
-  background: rgb(20 18 40 / 60%);
-}
-
-.budgetcalculatorpbc .budgetcalculatorpbc-pdf-panel {
-  box-sizing: border-box;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 16px;
-  width: min(360px, 100%);
-  padding: 28px 24px;
-  border-radius: 12px;
-  background: #fff;
-  color: #222;
-  text-align: center;
-}
-
-.budgetcalculatorpbc .budgetcalculatorpbc-pdf-panel:focus {
-  outline: none;
-}
-
-.budgetcalculatorpbc .budgetcalculatorpbc-spinner {
-  width: 40px;
-  height: 40px;
-  border: 4px solid #eee;
-  border-top-color: var(--pbc-cta);
-  border-radius: 50%;
-  animation: budgetcalculatorpbc-spin 0.8s linear infinite;
+.budgetcalculatorpbc .budgetcalculatorpbc-pdf-cta.is-loading .budgetcalculatorpbc-pdf-spinner {
+  display: inline-block;
 }
 
 @keyframes budgetcalculatorpbc-spin {
@@ -856,40 +847,20 @@
   }
 }
 
-.budgetcalculatorpbc .budgetcalculatorpbc-pdf-status {
-  margin: 0;
-  font-size: 16px;
-  font-weight: 600;
+@media (prefers-reduced-motion: reduce) {
+  .budgetcalculatorpbc .budgetcalculatorpbc-pdf-spinner {
+    animation-duration: 1.6s;
+  }
 }
 
-.budgetcalculatorpbc .budgetcalculatorpbc-pdf-actions {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 10px;
+.budgetcalculatorpbc .budgetcalculatorpbc-pdf .budgetcalculatorpbc-pdf-error {
+  flex-basis: 100%;
+  color: var(--pbc-red);
+  font-size: 12px;
 }
 
-.budgetcalculatorpbc .budgetcalculatorpbc-pdf-action {
-  display: inline-flex;
-  box-sizing: border-box;
-  align-items: center;
-  justify-content: center;
-  min-height: 44px;
-  padding: 0 20px;
-  border: 1px solid #232426;
-  border-radius: 45px;
-  background: #fff;
-  color: #232426;
-  font: inherit;
-  font-size: 15px;
-  font-weight: 600;
-  text-decoration: none;
-  cursor: pointer;
-}
-
-.budgetcalculatorpbc .budgetcalculatorpbc-pdf-open {
-  border-color: var(--pbc-cta);
-  background: var(--pbc-cta);
+.budgetcalculatorpbc .budgetcalculatorpbc-pdf .budgetcalculatorpbc-pdf-error:empty {
+  display: none;
 }
 
 /* ---- Desktop ---- */
@@ -1043,13 +1014,10 @@
     padding: 24px;
   }
 
-  .budgetcalculatorpbc .budgetcalculatorpbc-card[data-position='1'] {
-    width: min(513px, 92.6%);
-  }
-
-  .budgetcalculatorpbc .budgetcalculatorpbc-card[data-position='2'],
-  .budgetcalculatorpbc .budgetcalculatorpbc-card[data-position='out'] {
-    width: min(491px, 88.6%);
+  /* 513px and 491px behind a 554px card, as in the design. */
+  .budgetcalculatorpbc .budgetcalculatorpbc-stack {
+    --pbc-depth-1: 0.926;
+    --pbc-depth-2: 0.886;
   }
 
   .budgetcalculatorpbc .budgetcalculatorpbc-card-title {

@@ -7,8 +7,8 @@
  * canvas size limit. All copy and icons come from the block's "PDF" section.
  *
  * Delivery: desktop and Android download the file directly. iOS only allows
- * opening or sharing a generated file from a fresh tap, so it gets a "ready"
- * panel with Open PDF (new tab) and Share / Save (share sheet) buttons.
+ * opening a generated file from a fresh tap, so there the same button turns
+ * into "Open PDF" and opens the file in a new tab on the next tap.
  */
 import { loadCSS, loadScript } from '../../scripts/aem.js';
 
@@ -308,7 +308,11 @@ async function renderPdf(pages) {
   document.body.append(host);
   try {
     await Promise.all([...host.querySelectorAll('img')].map(loaded));
-    if (document.fonts) await document.fonts.ready;
+    if (document.fonts) {
+      // The PDF typeface must be ready before the first page is drawn.
+      await Promise.all(['400', '600', '700'].map((w) => document.fonts.load(`${w} 10px pbcpdf-manrope`)));
+      await document.fonts.ready;
+    }
     const PdfDocument = window.jspdf.jsPDF;
     const doc = new PdfDocument({ unit: 'pt', format: 'a4', compress: true });
     const width = doc.internal.pageSize.getWidth();
@@ -352,73 +356,75 @@ function save(blob, fileName) {
   setTimeout(() => URL.revokeObjectURL(url), 60000);
 }
 
-// Loader and result panel shown over the block while the PDF is prepared.
-function overlay(block, cfg, returnFocus) {
-  const layer = el('div', 'budgetcalculatorpbc-pdf-overlay');
-  layer.setAttribute('role', 'dialog');
-  layer.setAttribute('aria-modal', 'true');
-  const panel = el('div', 'budgetcalculatorpbc-pdf-panel');
-  panel.tabIndex = -1;
-  panel.setAttribute('aria-live', 'polite');
-  layer.append(panel);
-  block.append(layer);
-  let url = '';
+// iOS only opens or shares a generated file from a fresh tap, so a finished
+// PDF waits on its button ("Open PDF") until the user taps it again.
+const readyPdfs = new WeakMap();
 
-  const close = () => {
-    if (url) setTimeout(() => URL.revokeObjectURL(url), 60000);
-    layer.remove();
-    returnFocus.focus();
-  };
-  const closeButton = () => {
-    const button = el('button', 'budgetcalculatorpbc-pdf-action budgetcalculatorpbc-pdf-close', copy(cfg, 'close-text', 'Close'));
-    button.type = 'button';
-    button.addEventListener('click', close);
-    return button;
-  };
-  layer.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !layer.dataset.loading) close(); });
+function openReady(button, ui) {
+  const { url, file } = readyPdfs.get(button);
+  readyPdfs.delete(button);
+  ui.reset();
+  const tab = window.open(url, '_blank');
+  if (!tab) {
+    // Popups blocked: fall back to the share sheet, else this tab.
+    if (navigator.canShare && navigator.canShare({ files: [file] })) {
+      navigator.share({ files: [file], title: file.name }).catch(() => {});
+    } else {
+      window.location.assign(url);
+    }
+  }
+  setTimeout(() => URL.revokeObjectURL(url), 60000);
+}
 
+// The Download PDF button reflects progress: a spinner next to its icon while
+// the PDF is prepared, an inline message if it fails, and on iOS a ready state.
+function buttonState(button, cfg) {
+  const row = button.closest('.budgetcalculatorpbc-pdf');
+  const label = button.querySelector('.budgetcalculatorpbc-pdf-label');
+  const error = row.querySelector('.budgetcalculatorpbc-pdf-error');
+  const status = row.querySelector('[aria-live]');
+  if (!button.dataset.label) button.dataset.label = label.textContent;
+  const announce = (message) => { status.textContent = message; };
   return {
     loading() {
-      layer.dataset.loading = 'true';
-      panel.replaceChildren(el('span', 'budgetcalculatorpbc-spinner'), el('p', 'budgetcalculatorpbc-pdf-status', copy(cfg, 'loading-text', 'Generating your PDF…')));
-      panel.focus();
+      error.textContent = '';
+      button.classList.add('is-loading');
+      button.disabled = true;
+      button.setAttribute('aria-busy', 'true');
+      announce(copy(cfg, 'loading-text', 'Generating your PDF…'));
     },
-    ready(blob, fileName) {
-      delete layer.dataset.loading;
-      url = URL.createObjectURL(blob);
-      const actions = el('div', 'budgetcalculatorpbc-pdf-actions');
-      const open = el('a', 'budgetcalculatorpbc-pdf-action budgetcalculatorpbc-pdf-open', copy(cfg, 'open-text', 'Open PDF'));
-      open.href = url;
-      open.target = '_blank';
-      open.rel = 'noopener';
-      actions.append(open);
-      const file = new File([blob], fileName, { type: 'application/pdf' });
-      if (navigator.canShare && navigator.canShare({ files: [file] })) {
-        const share = el('button', 'budgetcalculatorpbc-pdf-action', copy(cfg, 'share-text', 'Share / Save'));
-        share.type = 'button';
-        share.addEventListener('click', () => navigator.share({ files: [file], title: fileName }).catch(() => {}));
-        actions.append(share);
-      }
-      actions.append(closeButton());
-      panel.replaceChildren(el('p', 'budgetcalculatorpbc-pdf-status', copy(cfg, 'ready-text', 'Your PDF is ready')), actions);
-      open.focus();
+    idle() {
+      button.classList.remove('is-loading');
+      button.disabled = false;
+      button.removeAttribute('aria-busy');
     },
-    error() {
-      delete layer.dataset.loading;
-      panel.replaceChildren(el('p', 'budgetcalculatorpbc-pdf-status', copy(cfg, 'error-text', 'Sorry, we couldn’t create the PDF. Please try again.')), closeButton());
-      panel.focus();
+    ready() {
+      label.textContent = copy(cfg, 'open-text', 'Open PDF');
+      button.classList.add('is-ready');
+      announce(copy(cfg, 'ready-text', 'Your PDF is ready'));
     },
-    close,
+    reset() {
+      label.textContent = button.dataset.label;
+      button.classList.remove('is-ready');
+      announce('');
+    },
+    failed() {
+      const message = copy(cfg, 'error-text', 'Sorry, we couldn’t create the PDF. Please try again.');
+      error.textContent = message;
+      announce(message);
+    },
   };
 }
 
 export default async function downloadPdf(options) {
-  const { block, button, config } = options;
+  const { button, config } = options;
+  const ui = buttonState(button, config);
+  if (readyPdfs.has(button)) {
+    openReady(button, ui);
+    return;
+  }
   if (busy) return;
   busy = true;
-  const ui = overlay(block, config, button);
-  button.disabled = true;
-  button.setAttribute('aria-busy', 'true');
   ui.loading();
   try {
     await loadLibraries();
@@ -426,18 +432,18 @@ export default async function downloadPdf(options) {
     const name = copy(config, 'file-name', 'Asian-Paints-Painting-Quotation.pdf');
     const fileName = /\.pdf$/i.test(name) ? name : `${name}.pdf`;
     if (isIOS()) {
-      ui.ready(blob, fileName);
+      const file = new File([blob], fileName, { type: 'application/pdf' });
+      readyPdfs.set(button, { url: URL.createObjectURL(blob), file });
+      ui.ready();
     } else {
       save(blob, fileName);
-      ui.close();
     }
   } catch (err) {
     // eslint-disable-next-line no-console
     console.error('budgetcalculatorpbc: PDF generation failed', err);
-    ui.error();
+    ui.failed();
   } finally {
     busy = false;
-    button.disabled = false;
-    button.removeAttribute('aria-busy');
+    ui.idle();
   }
 }

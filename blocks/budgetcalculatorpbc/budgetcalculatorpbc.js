@@ -542,14 +542,21 @@ function buildScreen3(cfg, onPdf) {
       card.append(includes);
     }
 
-    // Download PDF: generates a PDF from this card's recommendation.
+    // Download PDF: generates a PDF from this card's recommendation. While it
+    // is prepared, a small spinner shows inside the button, next to the icon.
     const pdf = el('div', 'budgetcalculatorpbc-pdf');
     pdf.append(el('p', '', system.pdfText || L.pdfText));
     const pdfButton = el('button', 'budgetcalculatorpbc-pdf-cta');
     pdfButton.type = 'button';
-    pdfButton.append(el('span', '', system.pdfCtaText || L.pdfCta));
+    const icon = el('span', 'budgetcalculatorpbc-pdf-icon');
+    const spinner = el('span', 'budgetcalculatorpbc-pdf-spinner');
+    icon.setAttribute('aria-hidden', 'true');
+    spinner.setAttribute('aria-hidden', 'true');
+    pdfButton.append(el('span', 'budgetcalculatorpbc-pdf-label', system.pdfCtaText || L.pdfCta), icon, spinner);
     pdfButton.addEventListener('click', () => onPdf(system, pdfButton));
-    pdf.append(pdfButton);
+    const pdfStatus = el('p', 'budgetcalculatorpbc-sr-only');
+    pdfStatus.setAttribute('aria-live', 'polite');
+    pdf.append(pdfButton, el('p', 'budgetcalculatorpbc-pdf-error'), pdfStatus);
     card.append(pdf);
     return card;
   }
@@ -557,11 +564,29 @@ function buildScreen3(cfg, onPdf) {
   let index = 0;
   let cards = [];
 
-  // The active card sets the stack height; the cards behind it are sized to
-  // match so they peek out evenly beneath it.
-  const sizer = new ResizeObserver(([entry]) => {
-    stack.style.height = `${entry.target.offsetHeight}px`;
-  });
+  // Every card is as tall as the tallest one, so moving between cards never
+  // changes the layout height (which made the results screen jump).
+  function normalizeHeights() {
+    if (!cards.length) {
+      stack.style.height = '';
+      return;
+    }
+    stack.classList.add('is-measuring');
+    const tallest = Math.max(...cards.map((card) => card.offsetHeight));
+    stack.classList.remove('is-measuring');
+    if (tallest) stack.style.height = `${tallest}px`;
+  }
+
+  // Re-measure when the stack's width changes: on resize, and when the
+  // results screen is shown (its width goes from 0 while hidden).
+  let stackWidth = -1;
+  new ResizeObserver(([entry]) => {
+    const { width } = entry.contentRect;
+    if (width === stackWidth) return;
+    stackWidth = width;
+    if (width) normalizeHeights();
+  }).observe(stack);
+  if (document.fonts) document.fonts.ready.then(normalizeHeights);
 
   // Position every card relative to the active one: the two after it peek
   // out beneath it and the rest wait "out" below the stack. Moving between
@@ -569,14 +594,11 @@ function buildScreen3(cfg, onPdf) {
   // bottom of the stack. Inactive cards are inert.
   function show(i) {
     index = Math.max(0, Math.min(i, cards.length - 1));
-    sizer.disconnect();
     cards.forEach((card, n) => {
       const offset = n - index;
       card.dataset.position = offset >= 0 && offset < 3 ? String(offset) : 'out';
       card.inert = offset !== 0;
     });
-    if (cards[index]) sizer.observe(cards[index]);
-    else stack.style.height = '';
     prev.disabled = index === 0;
     next.disabled = index >= cards.length - 1;
     status.textContent = cards.length ? `${index + 1} of ${cards.length}` : '';
@@ -605,6 +627,7 @@ function buildScreen3(cfg, onPdf) {
     stack.append(...cards);
     carousel.classList.toggle('is-single', cards.length < 2);
     show(0);
+    normalizeHeights();
   }
 
   function renderError() {
@@ -612,6 +635,7 @@ function buildScreen3(cfg, onPdf) {
     stack.textContent = '';
     stack.append(el('p', 'budgetcalculatorpbc-results-error', L.error));
     show(0);
+    normalizeHeights();
   }
 
   return {
