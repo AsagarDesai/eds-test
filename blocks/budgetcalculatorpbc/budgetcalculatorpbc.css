@@ -156,15 +156,54 @@
   cursor: pointer;
 }
 
-.budgetcalculatorpbc .budgetcalculatorpbc-cta::after {
-  content: '\2192';
-  font-size: 20px;
-  line-height: 1;
+/* The arrow artwork is a white-rendering SVG, so it is used as a mask filled
+   with the button's text colour. */
+.budgetcalculatorpbc .budgetcalculatorpbc-cta-icon {
+  flex: 0 0 auto;
+  width: 20px;
+  height: 20px;
+  background: currentcolor;
+  mask: url('../../icons/pbc-arrow.svg') center / contain no-repeat;
+}
+
+/* While results load, a small loader replaces the arrow. */
+.budgetcalculatorpbc .budgetcalculatorpbc-cta-spinner {
+  display: none;
+  box-sizing: border-box;
+  width: 18px;
+  height: 18px;
+  margin: 1px;
+  border: 2px solid currentcolor;
+  border-top-color: transparent;
+  border-radius: 50%;
+  animation: budgetcalculatorpbc-spin 0.7s linear infinite;
+}
+
+.budgetcalculatorpbc .budgetcalculatorpbc-cta.is-loading {
+  cursor: progress;
+}
+
+.budgetcalculatorpbc .budgetcalculatorpbc-cta.is-loading .budgetcalculatorpbc-cta-icon {
+  display: none;
+}
+
+.budgetcalculatorpbc .budgetcalculatorpbc-cta.is-loading .budgetcalculatorpbc-cta-spinner {
+  display: inline-block;
 }
 
 .budgetcalculatorpbc .budgetcalculatorpbc-cta:disabled {
   background: #fff;
   cursor: not-allowed;
+}
+
+/* Keep the button colour while it is busy loading results. */
+.budgetcalculatorpbc .budgetcalculatorpbc-cta.is-loading:disabled {
+  background: var(--pbc-cta);
+  cursor: progress;
+}
+
+.budgetcalculatorpbc .budgetcalculatorpbc-cta-submit.is-loading:disabled {
+  background: linear-gradient(rgb(254 201 64), rgb(255 153 0));
 }
 
 .budgetcalculatorpbc .budgetcalculatorpbc-cta:focus-visible {
@@ -444,33 +483,25 @@
   margin-bottom: 16px;
 }
 
+/* Slider arrows: white circle-arrow icons. */
 .budgetcalculatorpbc .budgetcalculatorpbc-nav {
   width: 36px;
   height: 36px;
   padding: 0;
-  border: 2px solid #fff;
+  border: 0;
   border-radius: 50%;
-  background: none;
-  color: #fff;
-  font-size: 18px;
-  line-height: 1;
+  background: center / contain no-repeat;
   cursor: pointer;
 }
 
 .budgetcalculatorpbc .budgetcalculatorpbc-nav-prev {
   grid-area: prev;
+  background-image: url('../../icons/pbc-slider-left.svg');
 }
 
 .budgetcalculatorpbc .budgetcalculatorpbc-nav-next {
   grid-area: next;
-}
-
-.budgetcalculatorpbc .budgetcalculatorpbc-nav-prev::before {
-  content: '\2190';
-}
-
-.budgetcalculatorpbc .budgetcalculatorpbc-nav-next::before {
-  content: '\2192';
+  background-image: url('../../icons/pbc-slider-right.svg');
 }
 
 .budgetcalculatorpbc .budgetcalculatorpbc-nav:focus-visible {
@@ -805,10 +836,13 @@
   cursor: pointer;
 }
 
-.budgetcalculatorpbc .budgetcalculatorpbc-pdf-icon::before {
-  content: '\2913';
-  font-size: 16px;
-  line-height: 1;
+/* Download icon, used as a mask so it takes the button's text colour. */
+.budgetcalculatorpbc .budgetcalculatorpbc-pdf-icon {
+  flex: 0 0 auto;
+  width: 21px;
+  height: 20px;
+  background: currentcolor;
+  mask: url('../../icons/pbc-download.svg') center / contain no-repeat;
 }
 
 /* On iOS the finished PDF opens from the same button. */
@@ -817,8 +851,10 @@
   background: var(--pbc-cta);
 }
 
-.budgetcalculatorpbc .budgetcalculatorpbc-pdf-cta.is-ready .budgetcalculatorpbc-pdf-icon::before {
-  content: '\2197';
+.budgetcalculatorpbc .budgetcalculatorpbc-pdf-cta.is-ready .budgetcalculatorpbc-pdf-icon {
+  width: 20px;
+  mask-image: url('../../icons/pbc-arrow.svg');
+  transform: rotate(-45deg);
 }
 
 /* Small loader next to the download icon while the PDF is prepared. */

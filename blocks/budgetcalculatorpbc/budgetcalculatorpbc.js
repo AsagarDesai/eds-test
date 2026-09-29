@@ -44,8 +44,7 @@
  *   Why Item | icon | title | description   (repeat; same for How Item)
  *   Plan | icon | name | "Included" + list, "Warranty" + list   (repeat)
  *   Plans Call Text | … {phone} …   File Name | …   Systems | selected | all
- *   Loading Text | …   Ready Text | …   Open Text | …   Share Text | …
- *   Close Text | …   Error Text | …
+ *   Loading Text | …   Ready Text | …   Open Text | … (iOS)   Error Text | …
  */
 
 const ASSET_HOST = 'https://www.asianpaints.com';
@@ -158,6 +157,15 @@ const copy = (cfg, key, fallback = '') => (cfg[key] && cfg[key].text) || fallbac
 
 /* ------------------------------------------------------------ form parts */
 
+// Label, arrow icon and the loader shown in place of the arrow while busy.
+function ctaContent(label) {
+  const icon = el('span', 'budgetcalculatorpbc-cta-icon');
+  const spinner = el('span', 'budgetcalculatorpbc-cta-spinner');
+  icon.setAttribute('aria-hidden', 'true');
+  spinner.setAttribute('aria-hidden', 'true');
+  return [el('span', 'budgetcalculatorpbc-cta-label', label), icon, spinner];
+}
+
 function buildRadioGroup(question, name) {
   const group = el('fieldset', 'budgetcalculatorpbc-radio-group');
   group.append(labelWithMark(el('legend', 'budgetcalculatorpbc-radio-title'), question.label));
@@ -269,7 +277,7 @@ function buildScreen1(cfg) {
   const cta = el('button', 'budgetcalculatorpbc-cta');
   cta.type = 'submit';
   cta.disabled = true;
-  cta.append(el('span', '', copy(cfg, 'cta', 'Calculate now')));
+  cta.append(...ctaContent(copy(cfg, 'cta', 'Calculate now')));
   form.append(cta);
 
   const areaValue = () => Number(areaInput.value || 0);
@@ -346,7 +354,7 @@ function buildScreen2(cfg) {
 
   const cta = el('button', 'budgetcalculatorpbc-cta budgetcalculatorpbc-cta-submit');
   cta.type = 'submit';
-  cta.append(el('span', '', copy(cfg, 'cta', 'View recommendations')));
+  cta.append(...ctaContent(copy(cfg, 'cta', 'View recommendations')));
   form.append(cta);
 
   const required = copy(cfg, 'required-error', 'Field is required');
@@ -734,6 +742,7 @@ export default function decorate(block) {
   async function showResults(button) {
     const answers = step1.answers();
     button.disabled = true;
+    button.classList.add('is-loading');
     block.setAttribute('aria-busy', 'true');
     try {
       const systems = await fetchSystems(endpoint, answers, useSample);
@@ -743,6 +752,7 @@ export default function decorate(block) {
       step3.renderError();
     } finally {
       button.disabled = false;
+      button.classList.remove('is-loading');
       block.removeAttribute('aria-busy');
       go(3);
     }
