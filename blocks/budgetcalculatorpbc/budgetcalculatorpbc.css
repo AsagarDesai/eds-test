@@ -201,8 +201,12 @@
 }
 
 .budgetcalculatorpbc .budgetcalculatorpbc-cta:disabled {
-  background: #fff;
+  background: #fdbf45;
   cursor: not-allowed;
+}
+
+.budgetcalculatorpbc .budgetcalculatorpbc-cta:hover {
+  background: #fdbf45;
 }
 
 /* Keep the button colour while it is busy loading results. */
