@@ -235,6 +235,35 @@ function buildField({ label, placeholder }) {
   return field;
 }
 
+// Height covered at the top of the viewport by fixed or sticky elements
+// (the site header and nav bars), found by probing down from the top edge
+// until a point is no longer covered by one.
+function pinnedBottom(y, block) {
+  let bottom = 0;
+  [0.1, 0.5, 0.9].forEach((x) => {
+    document.elementsFromPoint(window.innerWidth * x, y).forEach((node) => {
+      for (let n = node; n && n !== document.body && !n.contains(block); n = n.parentElement) {
+        const { position } = getComputedStyle(n);
+        if (position === 'fixed' || position === 'sticky') {
+          bottom = Math.max(bottom, n.getBoundingClientRect().bottom);
+          break;
+        }
+      }
+    });
+  });
+  return bottom;
+}
+
+function headerOverlap(block) {
+  let bottom = 0;
+  for (let probe = 0; probe < 5; probe += 1) {
+    const next = pinnedBottom(bottom + 1, block);
+    if (next <= bottom) break;
+    bottom = next;
+  }
+  return Math.min(bottom, window.innerHeight / 2);
+}
+
 /* -------------------------------------------------------------- screen 1 */
 
 function buildScreen1(cfg) {
@@ -762,11 +791,14 @@ export default function decorate(block) {
   const endpoint = copy(shared, 'endpoint', DEFAULT_ENDPOINT);
   const useSample = copy(shared, 'sample-data-fallback').toLowerCase() === 'true';
 
+  // Changing screens scrolls the block's top into view, just below any
+  // fixed or sticky site header, so no part of the new screen is hidden.
   const go = (n) => {
     block.dataset.screen = String(n);
     const target = block.querySelector(`.budgetcalculatorpbc-screen[data-screen="${n}"] [tabindex="-1"]`);
     if (target) target.focus({ preventScroll: true });
-    block.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    const top = block.getBoundingClientRect().top + window.scrollY - headerOverlap(block);
+    window.scrollTo({ top: Math.max(0, top), behavior: 'smooth' });
   };
 
   async function showResults(button) {
