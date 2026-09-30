@@ -227,8 +227,11 @@ function buildField({ label, placeholder }) {
   if (cfg.inputMode === 'numeric') {
     input.addEventListener('input', () => { input.value = input.value.replace(/\D/g, ''); });
   }
+  const error = el('p', 'budgetcalculatorpbc-error');
+  error.id = `${id}-error`;
+  input.setAttribute('aria-describedby', error.id);
   control.append(input, floating);
-  field.append(control, el('p', 'budgetcalculatorpbc-error'));
+  field.append(control, error);
   return field;
 }
 
@@ -366,17 +369,22 @@ function buildScreen2(cfg) {
     holder.classList.toggle('is-invalid', Boolean(message));
   };
 
+  // Checks one text field and shows (or clears) its error in place.
+  const validateField = (field) => {
+    const input = field.querySelector('input');
+    let message = '';
+    if (!input.value.trim()) message = required;
+    else if (!input.checkValidity()) message = invalid;
+    setError(field, message);
+    input.setAttribute('aria-invalid', String(Boolean(message)));
+    return !message;
+  };
+
   // Validates every field and question, showing each error in place.
   const validate = () => {
     let firstInvalid = null;
     form.querySelectorAll('.budgetcalculatorpbc-field').forEach((field) => {
-      const input = field.querySelector('input');
-      let message = '';
-      if (!input.value.trim()) message = required;
-      else if (!input.checkValidity()) message = invalid;
-      setError(field, message);
-      input.setAttribute('aria-invalid', String(Boolean(message)));
-      if (message && !firstInvalid) firstInvalid = input;
+      if (!validateField(field) && !firstInvalid) firstInvalid = field.querySelector('input');
     });
     form.querySelectorAll('.budgetcalculatorpbc-lead-questions .budgetcalculatorpbc-radio-group').forEach((group) => {
       const checked = group.querySelector('input:checked');
@@ -387,10 +395,15 @@ function buildScreen2(cfg) {
     return !firstInvalid;
   };
 
-  // Clear an error as soon as the user fixes that field.
+  // A field is checked as soon as the user leaves it, and while it shows an
+  // error it is re-checked on every keystroke, so the error clears once fixed.
+  form.addEventListener('focusout', (e) => {
+    const field = e.target.closest('.budgetcalculatorpbc-field');
+    if (field) validateField(field);
+  });
   form.addEventListener('input', (e) => {
-    const holder = e.target.closest('.budgetcalculatorpbc-field, .budgetcalculatorpbc-radio-group');
-    if (holder && holder.classList.contains('is-invalid')) setError(holder, '');
+    const field = e.target.closest('.budgetcalculatorpbc-field');
+    if (field && field.classList.contains('is-invalid')) validateField(field);
   });
   form.addEventListener('change', (e) => {
     const group = e.target.closest('.budgetcalculatorpbc-radio-group');
