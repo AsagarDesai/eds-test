@@ -43,7 +43,7 @@
  *   Call Text | … {phone}   Why Title | …   How Title | …   Plans Title | …
  *   Why Item | icon | title | description   (repeat; same for How Item)
  *   Plan | icon | name | "Included" + list, "Warranty" + list   (repeat)
- *   Plans Call Text | … {phone} …   File Name | …   Systems | selected | all
+ *   Plans Call Text | … {phone} …   File Name | …   Systems | all (default) | selected
  *   Loading Text | …   Ready Text | …   Open Text | … (iOS)   Error Text | …
  */
 

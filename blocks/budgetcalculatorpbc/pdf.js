@@ -1,10 +1,11 @@
 /**
  * PDF export for the budgetcalculatorpbc block (pbc variant).
  *
- * Builds A4 pages (595 x 842 CSS px) from the recommendation whose Download
- * PDF was clicked, renders each page with html2canvas and assembles them with
- * jsPDF. Rendering page by page keeps every canvas well inside iOS Safari's
- * canvas size limit. All copy and icons come from the block's "PDF" section.
+ * Builds A4 pages (595 x 842 CSS px) listing every recommended system in rank
+ * order (or only the clicked card, with "Systems | selected"), renders each
+ * page with html2canvas and assembles them with jsPDF. Rendering page by page
+ * keeps every canvas well inside iOS Safari's canvas size limit. All copy and
+ * icons come from the block's "PDF" section.
  *
  * Delivery: desktop and Android download the file directly. iOS only allows
  * opening a generated file from a fresh tap, so there the same button turns
@@ -270,9 +271,12 @@ function buildPages({
   const phone = copy(config, 'phone', '1800-266-2090');
   const rank = (s) => Number(s.systemRank) || 0;
   const ranked = [...systems].sort((a, b) => rank(a) - rank(b));
-  const list = copy(config, 'systems', 'selected').toLowerCase() === 'all'
-    ? [system, ...ranked.filter((s) => s !== system)]
-    : [system];
+  // As in the existing AEM PDF, every recommended system is listed in rank
+  // order (the badge marks the best one). "Systems | selected" limits the PDF
+  // to the card whose Download PDF was clicked.
+  const list = copy(config, 'systems', 'all').toLowerCase() === 'selected'
+    ? [system]
+    : ranked;
 
   // Two recommendations per page, the first page led by the greeting.
   const pages = [];
@@ -397,6 +401,8 @@ function buttonState(button, cfg) {
       button.classList.remove('is-loading');
       button.disabled = false;
       button.removeAttribute('aria-busy');
+      // Clear the loading announcement unless a ready/error message replaced it.
+      if (status.textContent === copy(cfg, 'loading-text', 'Generating your PDF…')) announce('');
     },
     ready() {
       label.textContent = copy(cfg, 'open-text', 'Open PDF');
