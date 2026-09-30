@@ -380,8 +380,12 @@ function openReady(button, ui) {
   setTimeout(() => URL.revokeObjectURL(url), 60000);
 }
 
+// Pending timers that hide a card's PDF error message, by message element.
+const errorTimers = new WeakMap();
+
 // The Download PDF button reflects progress: a spinner next to its icon while
-// the PDF is prepared, an inline message if it fails, and on iOS a ready state.
+// the PDF is prepared, an inline message if it fails (hidden again after a few
+// seconds), and on iOS a ready state.
 function buttonState(button, cfg) {
   const row = button.closest('.budgetcalculatorpbc-pdf');
   const label = button.querySelector('.budgetcalculatorpbc-pdf-label');
@@ -389,9 +393,15 @@ function buttonState(button, cfg) {
   const status = row.querySelector('[aria-live]');
   if (!button.dataset.label) button.dataset.label = label.textContent;
   const announce = (message) => { status.textContent = message; };
+  const clearError = () => {
+    clearTimeout(errorTimers.get(error));
+    errorTimers.delete(error);
+    if (error.textContent && status.textContent === error.textContent) announce('');
+    error.textContent = '';
+  };
   return {
     loading() {
-      error.textContent = '';
+      clearError();
       button.classList.add('is-loading');
       button.disabled = true;
       button.setAttribute('aria-busy', 'true');
@@ -416,8 +426,11 @@ function buttonState(button, cfg) {
     },
     failed() {
       const message = copy(cfg, 'error-text', 'Sorry, we couldn’t create the PDF. Please try again.');
+      clearError();
       error.textContent = message;
       announce(message);
+      const seconds = Number(copy(cfg, 'error-duration', '5'));
+      errorTimers.set(error, setTimeout(clearError, (seconds > 0 ? seconds : 5) * 1000));
     },
   };
 }
