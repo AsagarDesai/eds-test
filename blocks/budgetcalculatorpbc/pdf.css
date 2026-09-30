@@ -18,10 +18,9 @@
   font-family: pbcpdf-manrope, var(--body-font-family);
 }
 
-.pbcpdf p,
-.pbcpdf h2,
-.pbcpdf dl,
-.pbcpdf dd {
+/* Resets the site's global p/h2 margins with single-class specificity, so it
+   beats those element rules while every margin set below still wins. */
+.pbcpdf :where(p, h2, dl, dd) {
   margin: 0;
 }
 
@@ -98,7 +97,7 @@
 /* ---- Recommendation panel ---- */
 .pbcpdf-product {
   position: relative;
-  padding: 28px 20px 18px;
+  padding: 24px 20px 14px;
   border-radius: 10px;
   background: #fff;
 }
@@ -138,7 +137,7 @@
 }
 
 .pbcpdf-product-subtitle {
-  margin: 3px 0 14px;
+  margin: 2px 0 10px;
   color: #6b6b6b;
   font-size: 9px;
 }
@@ -147,7 +146,7 @@
   display: grid;
   grid-template-columns: 1fr auto;
   align-items: baseline;
-  gap: 7px 16px;
+  gap: 5px 16px;
   font-size: 9.5px;
 }
 
@@ -171,7 +170,7 @@
 }
 
 .pbcpdf-steps-title {
-  margin: 16px 0 10px;
+  margin: 18px 0 10px;
   font-size: 9.5px;
   font-weight: 700;
 }
@@ -197,7 +196,7 @@
 }
 
 .pbcpdf-step-coat {
-  margin-top: 3px;
+  margin-top: 2px;
   color: #5b2d8e;
   font-size: 6.5px;
   font-weight: 700;
@@ -205,9 +204,9 @@
 
 .pbcpdf-step-image {
   display: block;
-  width: 58px;
-  height: 66px;
-  margin: 6px auto;
+  width: 54px;
+  height: 60px;
+  margin: 4px auto;
   object-fit: contain;
 }
 
@@ -218,7 +217,7 @@
 }
 
 .pbcpdf-step-qty-label {
-  margin-top: 3px;
+  margin-top: 2px;
   color: #333;
   font-size: 6.5px;
   font-weight: 700;
@@ -284,7 +283,7 @@
 }
 
 .pbcpdf-panel-title {
-  margin-bottom: 20px;
+  margin-bottom: 26px;
   font-size: 14px;
   font-weight: 600;
   text-align: center;
