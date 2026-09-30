@@ -1,3 +1,12 @@
+/* Manrope, as used by the existing Asian Paints calculator (bundled, OFL). */
+@font-face {
+  font-family: pbc-manrope;
+  font-style: normal;
+  font-weight: 200 800;
+  font-display: swap;
+  src: url('../../fonts/manrope-latin.woff2') format('woff2');
+}
+
 .budgetcalculatorpbc {
   --pbc-orange: #feb940;
   --pbc-cream: #fee6b7;
@@ -8,7 +17,7 @@
   position: relative;
   width: 100%;
   color: #fff;
-  font-family: manrope, var(--body-font-family);
+  font-family: pbc-manrope, var(--body-font-family);
   background-color: #2f2c4d;
   background-image: var(--bg-image-mobile);
   background-size: 100% 100%;
@@ -74,7 +83,7 @@
 .budgetcalculatorpbc .budgetcalculatorpbc-error {
   margin: 6px 0 0;
   color: #f00;
-  font-size: 12px;
+  font-size: 11px;
   line-height: 1.3;
 }
 
@@ -124,7 +133,7 @@
 }
 
 .budgetcalculatorpbc .budgetcalculatorpbc-radio input[type='radio']:checked {
-  background: radial-gradient(circle, var(--pbc-orange) 0 4px, #fff 5px);
+  background: radial-gradient(circle, var(--pbc-orange) 0 4px, #fff3 5px);
 }
 
 .budgetcalculatorpbc .budgetcalculatorpbc-radio input[type='radio']:focus-visible {
@@ -239,6 +248,7 @@
   border: 1px solid #fff;
   border-radius: 6px;
   background: rgb(255 255 255 / 20%);
+  box-shadow: 0 1px 2px rgb(16 24 40 / 5%);
   color: #fff;
   font: inherit;
   font-size: 16px;
@@ -247,6 +257,13 @@
 .budgetcalculatorpbc .budgetcalculatorpbc-area-input::placeholder {
   color: #fff;
   font-size: 12px;
+  font-weight: 500;
+}
+
+/* No browser (black) focus ring: a soft white ring matches the white border. */
+.budgetcalculatorpbc .budgetcalculatorpbc-area-input:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgb(255 255 255 / 45%);
 }
 
 .budgetcalculatorpbc .budgetcalculatorpbc-area-input[aria-invalid='true'] {
@@ -402,8 +419,9 @@
   background: none;
   color: #fff;
   font: inherit;
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 700;
+  line-height: 19.6px;
   cursor: pointer;
 }
 
@@ -442,25 +460,30 @@
 
 .budgetcalculatorpbc .budgetcalculatorpbc-info-subtitle {
   margin: 0;
+  padding: 0 15%;
   font-size: 12px;
+  font-weight: 500;
   line-height: 1.4;
 }
 
 .budgetcalculatorpbc .budgetcalculatorpbc-info-description p {
-  margin: 0 0 16px;
-  font-size: 16px;
+  margin: 0 0 11px;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 14.4px;
 }
 
 .budgetcalculatorpbc .budgetcalculatorpbc-info-description ul {
-  margin: 0;
-  padding-left: 18px;
+  margin: 5px 0 0;
+  padding-left: 16px;
 }
 
 .budgetcalculatorpbc .budgetcalculatorpbc-info-description li {
+  width: 90%;
   margin-bottom: 10px;
-  font-size: 13px;
+  font-size: 12px;
   font-weight: 500;
-  line-height: 1.4;
+  line-height: 16.39px;
 }
 
 /* Carousel: cards stack in one grid cell; mobile nav sits underneath. */
@@ -553,7 +576,7 @@
   border-radius: 8px;
   background: #fff;
   color: #000;
-  box-shadow: 0 4px 14px rgb(0 0 0 / 18%);
+  box-shadow: 0 4px 24px rgb(0 0 0 / 15%);
 
   /* Depth comes from scaling around the bottom edge, never from width, so a
      card's content never re-wraps while it animates. */
@@ -625,11 +648,12 @@
   grid-area: title;
   justify-self: center;
   margin: 0 0 12px;
-  background: linear-gradient(90deg, #52307c 0%, var(--pbc-link) 100%);
+  background: linear-gradient(270deg, #f8a12e 0%, #be2a1d 50.07%, #45216c 98.1%);
   background-clip: text;
   color: transparent;
   font-size: 12px;
   font-weight: 700;
+  line-height: 14.4px;
 }
 
 .budgetcalculatorpbc .budgetcalculatorpbc-card-media {
@@ -669,14 +693,16 @@
   grid-area: prices;
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
-  gap: 10px 12px;
-  margin: 16px 0 0;
+  align-items: center;
+  gap: 0 12px;
+  margin: 14px 0 0;
   font-size: 11px;
+  line-height: 25px;
 }
 
 .budgetcalculatorpbc .budgetcalculatorpbc-prices dt {
   color: #2f2f2f;
-  font-weight: 500;
+  font-weight: 400;
 }
 
 .budgetcalculatorpbc .budgetcalculatorpbc-prices dd {
@@ -696,10 +722,11 @@
 }
 
 .budgetcalculatorpbc .budgetcalculatorpbc-products-title {
-  margin: 16px 0 10px;
+  margin: 20px 0 16px;
   color: #000;
   font-size: 12px;
   font-weight: 700;
+  line-height: 14.4px;
 }
 
 .budgetcalculatorpbc .budgetcalculatorpbc-products-list {
@@ -713,25 +740,27 @@
 }
 
 .budgetcalculatorpbc .budgetcalculatorpbc-product {
-  flex: 0 0 128px;
+  flex: 0 0 124px;
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 8px;
-  padding: 10px 8px;
+  gap: 6px;
+  min-height: 143px;
+  padding: 10px 4px;
   border-radius: 5px;
-  box-shadow: 0 0 6px rgb(0 0 0 / 15%);
+  box-shadow: 0 1px 5px 1px rgb(0 0 0 / 10%);
   text-align: center;
   scroll-snap-align: start;
 }
 
 .budgetcalculatorpbc .budgetcalculatorpbc-product-name {
   margin: 0;
+  min-height: 28.8px;
   color: #2f2f2f;
   font-size: 12px;
-  font-weight: 600;
-  line-height: 1.2;
+  font-weight: 700;
+  line-height: 14.4px;
   text-transform: capitalize;
 }
 
@@ -763,9 +792,9 @@
 .budgetcalculatorpbc .budgetcalculatorpbc-disclaimer {
   grid-area: disclaimer;
   margin: 12px 0 0;
-  color: #555;
+  color: #75787b;
   font-size: 10px;
-  line-height: 1.4;
+  line-height: 11px;
 }
 
 .budgetcalculatorpbc .budgetcalculatorpbc-disclaimer .budgetcalculatorpbc-mark {
@@ -780,7 +809,8 @@
 }
 
 .budgetcalculatorpbc .budgetcalculatorpbc-card-includes p {
-  margin: 0 0 6px;
+  margin: 0 0 5px;
+  color: #4c4c4c;
   font-size: 12px;
   font-weight: 700;
 }
@@ -791,13 +821,19 @@
 }
 
 .budgetcalculatorpbc .budgetcalculatorpbc-card-includes li {
-  margin-bottom: 6px;
+  margin-bottom: 10px;
+  color: #a5a5a5;
   font-size: 12px;
-  line-height: 1.35;
+  line-height: 14px;
+}
+
+.budgetcalculatorpbc .budgetcalculatorpbc-card-includes li::marker {
+  color: #4c4c4c;
 }
 
 .budgetcalculatorpbc .budgetcalculatorpbc-card-includes b,
 .budgetcalculatorpbc .budgetcalculatorpbc-card-includes strong {
+  color: #4c4c4c;
   font-weight: 400;
 }
 
@@ -806,9 +842,9 @@
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 10px;
+  gap: 5px;
   margin-top: 12px;
-  padding-top: 16px;
+  padding: 16px 0 4px;
   border-top: 1px solid #c4c4c4;
 }
 
@@ -955,10 +991,6 @@
     width: 320px;
   }
 
-  .budgetcalculatorpbc .budgetcalculatorpbc-area-input::placeholder {
-    font-size: 16px;
-  }
-
   .budgetcalculatorpbc .budgetcalculatorpbc-cta {
     justify-self: start;
     width: auto;
@@ -1013,14 +1045,18 @@
   }
 
   .budgetcalculatorpbc .budgetcalculatorpbc-info-title {
-    margin-bottom: 16px;
-    font-size: 36px;
+    margin-bottom: 15px;
+    font-size: 32px;
+    font-weight: 800;
+    line-height: 35.2px;
   }
 
   .budgetcalculatorpbc .budgetcalculatorpbc-info-subtitle {
-    max-width: 400px;
-    margin-bottom: 32px;
-    font-size: 18px;
+    max-width: 75%;
+    margin-bottom: 25px;
+    padding: 0;
+    font-size: 16px;
+    line-height: normal;
   }
 
   .budgetcalculatorpbc .budgetcalculatorpbc-info-description {
@@ -1047,7 +1083,8 @@
       'pdf pdf' auto / 103px minmax(0, 1fr);
     column-gap: 24px;
     width: min(554px, 100%);
-    padding: 24px;
+    min-height: 509px;
+    padding: 20px 30px;
   }
 
   /* 513px and 491px behind a 554px card, as in the design. */
@@ -1060,6 +1097,7 @@
     margin-bottom: 20px;
     font-size: 16px;
     font-weight: 800;
+    line-height: 43.71px;
   }
 
   .budgetcalculatorpbc .budgetcalculatorpbc-card-media img {
@@ -1068,26 +1106,28 @@
   }
 
   .budgetcalculatorpbc .budgetcalculatorpbc-card-name {
-    margin-bottom: 12px;
+    margin-bottom: 4px;
     font-size: 20px;
   }
 
   .budgetcalculatorpbc .budgetcalculatorpbc-prices {
-    margin: 0 0 8px;
+    margin: 8px 0 0;
     font-size: 12px;
+  }
+
+  .budgetcalculatorpbc .budgetcalculatorpbc-prices dt {
+    font-weight: 500;
   }
 
   .budgetcalculatorpbc .budgetcalculatorpbc-products-list {
     flex-wrap: wrap;
+    gap: 20px;
     overflow: visible;
-  }
-
-  .budgetcalculatorpbc .budgetcalculatorpbc-product {
-    flex-basis: 135px;
   }
 
   .budgetcalculatorpbc .budgetcalculatorpbc-disclaimer {
     font-size: 11px;
+    line-height: normal;
   }
 
   .budgetcalculatorpbc .budgetcalculatorpbc-card-includes {
@@ -1095,8 +1135,8 @@
   }
 
   .budgetcalculatorpbc .budgetcalculatorpbc-pdf {
-    gap: 24px;
-    padding-top: 19px;
+    gap: 16px;
+    padding: 19px 0;
   }
 
   .budgetcalculatorpbc .budgetcalculatorpbc-pdf p {
