@@ -7,6 +7,12 @@
   src: url('../../fonts/manrope-latin.woff2') format('woff2');
 }
 
+/* The calculator runs full-bleed: no section max-width or side padding. */
+.section.budgetcalculatorpbc-container .budgetcalculatorpbc-wrapper {
+  padding: 0;
+  max-width: 100%;
+}
+
 .budgetcalculatorpbc {
   --pbc-orange: #feb940;
   --pbc-cream: #fee6b7;
@@ -389,12 +395,6 @@
 .budgetcalculatorpbc .budgetcalculatorpbc-lead .budgetcalculatorpbc-radio {
   gap: 6px;
   font-size: 13px;
-}
-
-.budgetcalculatorpbc .budgetcalculatorpbc-lead .budgetcalculatorpbc-radio input[type='radio'] {
-  width: 18px;
-  height: 18px;
-  background: transparent;
 }
 
 .budgetcalculatorpbc .budgetcalculatorpbc-consent {
