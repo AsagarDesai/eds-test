@@ -54,6 +54,7 @@ const REQUEST_DEFAULTS = {
   surface: '', language: 'en', apltype: 'APL_WEB', multiplierValue: '1.35',
 };
 const FORM_DONE_KEY = 'budgetcalculatorpbc:form-submitted';
+const CONTACT_KEY = 'budgetcalculatorpbc:contact';
 const STEP_KEYS = ['stepOne', 'stepTwo', 'stepThree', 'stepFour'];
 
 let uid = 0;
@@ -698,15 +699,31 @@ function markFormDone() {
   try { localStorage.setItem(FORM_DONE_KEY, 'true'); } catch (e) { /* storage unavailable */ }
 }
 
+// Like the existing AEM tool (its CCFormFields cookie), the name, email and
+// mobile from the lead form are remembered on this browser so later PDFs,
+// made after the form is skipped, are still personalised. Nothing else from
+// the form is kept, and it is never sent anywhere.
+function savedContact() {
+  try { return JSON.parse(localStorage.getItem(CONTACT_KEY)) || null; } catch (e) { return null; }
+}
+
+function saveContact(data) {
+  const contact = Object.fromEntries(Object.entries(data)
+    .filter(([key]) => /name|email|mobile|phone/.test(key)));
+  try {
+    localStorage.setItem(CONTACT_KEY, JSON.stringify(contact));
+  } catch (e) { /* storage unavailable */ }
+  return contact;
+}
+
 /* ----------------------------------------------------------------- block */
 
 export default function decorate(block) {
   const groups = splitSteps([...block.children]);
   const shared = readRows(groups.shared);
   const pdfConfig = readRows(groups.pdf);
-  // The lead's contact details personalise the PDF. They are kept in memory
-  // only (never stored), so a PDF made after a skipped form is generic.
-  let lead = null;
+  // The lead's contact details personalise the PDF (greeting, mobile, email).
+  let lead = savedContact();
   let results = { systems: [], area: '' };
   let step3 = null;
 
@@ -769,7 +786,7 @@ export default function decorate(block) {
     e.preventDefault();
     if (!step2.validate()) return;
     markFormDone();
-    lead = step2.data();
+    lead = saveContact(step2.data());
     // Integration hook: the lead data is handed to whoever listens for it.
     block.dispatchEvent(new CustomEvent('budgetcalculatorpbc:lead', {
       bubbles: true, detail: { ...step2.data(), ...step1.answers() },
