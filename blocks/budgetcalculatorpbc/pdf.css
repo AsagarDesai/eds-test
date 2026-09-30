@@ -108,7 +108,7 @@
   left: 0;
   padding: 4px 12px;
   border-radius: 10px 0;
-  background: linear-gradient(90deg, #5b2d8e, #ee7d3b);
+  background: var(--gradients-text-gradient, linear-gradient(91deg, #431a80 1.46%, #ee4137 51.38%, #feb940 100%));
   color: #fff;
   font-size: 7.5px;
   font-weight: 700;
