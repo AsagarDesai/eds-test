@@ -327,25 +327,19 @@
   transform: translateY(-50%);
 }
 
-/* Floating label sits on the top border once focused or filled. */
+/* The field label always sits on the top border, above the placeholder. */
 .budgetcalculatorpbc .budgetcalculatorpbc-float-label {
   position: absolute;
   top: 0;
   left: 12px;
-  padding: 0 4px;
+  padding: 0 5px;
+  border-radius: 2px;
   background: #fff;
   color: #555;
   font-size: 12px;
   line-height: 1.2;
-  opacity: 0;
   transform: translateY(-50%);
   pointer-events: none;
-  transition: opacity 0.15s ease;
-}
-
-.budgetcalculatorpbc .budgetcalculatorpbc-control:focus-within .budgetcalculatorpbc-float-label,
-.budgetcalculatorpbc .budgetcalculatorpbc-control:has(input:not(:placeholder-shown)) .budgetcalculatorpbc-float-label {
-  opacity: 1;
 }
 
 .budgetcalculatorpbc .budgetcalculatorpbc-field.is-invalid input {
@@ -359,6 +353,11 @@
 
 .budgetcalculatorpbc .budgetcalculatorpbc-lead .budgetcalculatorpbc-mark {
   color: var(--pbc-red);
+}
+
+/* Field labels keep their asterisk in the label colour. */
+.budgetcalculatorpbc .budgetcalculatorpbc-float-label .budgetcalculatorpbc-mark {
+  color: inherit;
 }
 
 .budgetcalculatorpbc .budgetcalculatorpbc-checkbox {
@@ -1012,7 +1011,7 @@
 
   .budgetcalculatorpbc .budgetcalculatorpbc-fields {
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 28px;
+    gap: 38px 28px;
   }
 
   .budgetcalculatorpbc .budgetcalculatorpbc-lead-questions {
