@@ -115,7 +115,9 @@ function newPage(variant) {
 /* ------------------------------------------------------- product pages */
 
 function header(cfg, person) {
-  const wrap = el('header', 'pbcpdf-header');
+  // A div, not a <header>: sites style their own page header with element
+  // rules (e.g. a fixed `header`), which would pull this out of the page.
+  const wrap = el('div', 'pbcpdf-header');
   const greeting = el('div', 'pbcpdf-greeting');
   const name = person.name || copy(cfg, 'default-name', 'Customer');
   greeting.append(

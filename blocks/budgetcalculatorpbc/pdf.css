@@ -53,13 +53,24 @@
   gap: 12px;
 }
 
-/* ---- Greeting header ---- */
-.pbcpdf-header {
+/* ---- Greeting header ----
+   Reset anything a site's own header styles could add, so the greeting
+   always stays in place at the top of page 1. */
+.pbcpdf .pbcpdf-header {
+  position: static;
+  inset: auto;
+  z-index: auto;
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
   gap: 16px;
+  width: auto;
+  height: auto;
   margin-bottom: 10px;
+  visibility: visible;
+  transform: none;
+  background: none;
+  box-shadow: none;
 }
 
 .pbcpdf-name {
