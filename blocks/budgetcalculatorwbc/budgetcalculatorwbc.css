@@ -1,0 +1,1387 @@
+/* Manrope, as used by the existing Asian Paints calculator (bundled, OFL). */
+@font-face {
+  font-family: wbc-manrope;
+  font-style: normal;
+  font-weight: 200 800;
+  font-display: swap;
+  src: url('../../fonts/manrope-latin.woff2') format('woff2');
+}
+
+/* The calculator runs full-bleed: no section max-width or side padding. */
+.section.budgetcalculatorwbc-container .budgetcalculatorwbc-wrapper {
+  padding: 0;
+  max-width: 100%;
+}
+
+.budgetcalculatorwbc {
+  --wbc-orange: #feb940;
+  --wbc-cream: #fee6b7;
+  --wbc-cta: #fcaf17;
+  --wbc-link: rgb(244 120 56);
+  --wbc-red: rgb(237 28 36);
+
+  position: relative;
+  width: 100%;
+  color: #fff;
+  font-family: wbc-manrope, var(--body-font-family);
+  background-color: #3b4248;
+  background-image: var(--bg-image-mobile);
+  background-size: 100% 100%;
+}
+
+/* Headings use the block's typeface rather than the site heading font. */
+.budgetcalculatorwbc :is(h2, h3, h4) {
+  font-family: inherit;
+}
+
+.budgetcalculatorwbc[aria-busy='true'] {
+  cursor: progress;
+}
+
+/* Only the active screen is shown; all stay in the DOM to keep their state. */
+.budgetcalculatorwbc .budgetcalculatorwbc-screen {
+  display: none;
+  box-sizing: border-box;
+  padding: 24px 16px 32px;
+}
+
+.budgetcalculatorwbc[data-screen='1'] .budgetcalculatorwbc-screen[data-screen='1'],
+.budgetcalculatorwbc[data-screen='2'] .budgetcalculatorwbc-screen[data-screen='2'],
+.budgetcalculatorwbc[data-screen='3'] .budgetcalculatorwbc-screen[data-screen='3'] {
+  display: grid;
+  gap: 24px;
+}
+
+.budgetcalculatorwbc .budgetcalculatorwbc-sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* ---- Shared intro (screens 1 and 2) ---- */
+.budgetcalculatorwbc .budgetcalculatorwbc-title {
+  margin: 0 0 8px;
+  color: var(--wbc-orange);
+  font-size: 32px;
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -1px;
+}
+
+.budgetcalculatorwbc .budgetcalculatorwbc-title:focus {
+  outline: none;
+}
+
+.budgetcalculatorwbc .budgetcalculatorwbc-highlight {
+  color: var(--wbc-cream);
+  font-weight: inherit;
+}
+
+.budgetcalculatorwbc .budgetcalculatorwbc-subtitle {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.4;
+}
+
+.budgetcalculatorwbc .budgetcalculatorwbc-error {
+  margin: 6px 0 0;
+  color: #f00;
+  font-size: 11px;
+  line-height: 1.3;
+}
+
+.budgetcalculatorwbc .budgetcalculatorwbc-error:empty {
+  display: none;
+}
+
+/* ---- Radio groups ---- */
+.budgetcalculatorwbc .budgetcalculatorwbc-radio-group {
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.budgetcalculatorwbc .budgetcalculatorwbc-radio-title {
+  margin-bottom: 12px;
+  padding: 0;
+  font-size: 20px;
+  line-height: 1.3;
+}
+
+.budgetcalculatorwbc .budgetcalculatorwbc-radio-options {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px 24px;
+}
+
+.budgetcalculatorwbc .budgetcalculatorwbc-radio {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.budgetcalculatorwbc .budgetcalculatorwbc-radio input[type='radio'] {
+  appearance: none;
+  flex: 0 0 auto;
+  width: 20px;
+  height: 20px;
+  margin: 0;
+  border: 1px solid #fff;
+  border-radius: 50%;
+  background: rgb(255 255 255 / 20%);
+  cursor: pointer;
+}
+
+.budgetcalculatorwbc .budgetcalculatorwbc-radio input[type='radio']:checked {
+  background: radial-gradient(circle, var(--wbc-orange) 0 4px, #fff3 5px);
+}
+
+.budgetcalculatorwbc .budgetcalculatorwbc-radio input[type='radio']:focus-visible {
+  outline: 2px solid var(--wbc-cream);
+  outline-offset: 2px;
+}
+
+.budgetcalculatorwbc .budgetcalculatorwbc-radio input:checked + .budgetcalculatorwbc-radio-text {
+  font-weight: 700;
+}
+
+/* ---- Buttons ---- */
+.budgetcalculatorwbc .budgetcalculatorwbc-cta {
+  display: inline-flex;
+  box-sizing: border-box;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  height: 52px;
+  padding: 0 24px;
+  border: 0;
+  border-radius: 45px;
+  background: var(--wbc-cta);
+  color: #232426;
+  font: inherit;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+/* The arrow artwork is a white-rendering SVG, so it is used as a mask filled
+   with the button's text colour. */
+.budgetcalculatorwbc .budgetcalculatorwbc-cta-icon {
+  flex: 0 0 auto;
+  width: 20px;
+  height: 20px;
+  background: currentcolor;
+  mask: url('../../icons/pbc-arrow.svg') center / contain no-repeat;
+}
+
+/* While results load, a small loader replaces the arrow. */
+.budgetcalculatorwbc .budgetcalculatorwbc-cta-spinner {
+  display: none;
+  box-sizing: border-box;
+  width: 18px;
+  height: 18px;
+  margin: 1px;
+  border: 2px solid currentcolor;
+  border-top-color: transparent;
+  border-radius: 50%;
+  animation: budgetcalculatorwbc-spin 0.7s linear infinite;
+}
+
+.budgetcalculatorwbc .budgetcalculatorwbc-cta.is-loading {
+  cursor: progress;
+}
+
+.budgetcalculatorwbc .budgetcalculatorwbc-cta.is-loading .budgetcalculatorwbc-cta-icon {
+  display: none;
+}
+
+.budgetcalculatorwbc .budgetcalculatorwbc-cta.is-loading .budgetcalculatorwbc-cta-spinner {
+  display: inline-block;
+}
+
+.budgetcalculatorwbc .budgetcalculatorwbc-cta:disabled {
+  background: #fdbf45;
+  cursor: not-allowed;
+}
+
+.budgetcalculatorwbc .budgetcalculatorwbc-cta:hover {
+  background: #fdbf45;
+}
+
+/* Keep the button colour while it is busy loading results. */
+.budgetcalculatorwbc .budgetcalculatorwbc-cta.is-loading:disabled {
+  background: var(--wbc-cta);
+  cursor: progress;
+}
+
+.budgetcalculatorwbc .budgetcalculatorwbc-cta-submit.is-loading:disabled {
+  background: linear-gradient(rgb(254 201 64), rgb(255 153 0));
+}
+
+.budgetcalculatorwbc .budgetcalculatorwbc-cta:focus-visible {
+  outline: 2px solid var(--wbc-cream);
+  outline-offset: 3px;
+}
+
+/* ---- Screen 1: surface, project type and area ---- */
+.budgetcalculatorwbc .budgetcalculatorwbc-details {
+  padding: 28px 18px 45px;
+}
+
+.budgetcalculatorwbc .budgetcalculatorwbc-details .budgetcalculatorwbc-intro {
+  text-align: center;
+}
+
+.budgetcalculatorwbc .budgetcalculatorwbc-details .budgetcalculatorwbc-title {
+  margin-bottom: 10px;
+  color: #fff;
+  font-size: 20px;
+  font-weight: 700;
+  line-height: normal;
+  letter-spacing: 0;
+}
+
+.budgetcalculatorwbc .budgetcalculatorwbc-details .budgetcalculatorwbc-subtitle {
+  padding: 0 15%;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: normal;
+}
+
+.budgetcalculatorwbc .budgetcalculatorwbc-details-form {
+  display: grid;
+  gap: 30px;
+  padding-top: 0;
+}
+
+.budgetcalculatorwbc .budgetcalculatorwbc-details .budgetcalculatorwbc-radio-title,
+.budgetcalculatorwbc .budgetcalculatorwbc-area-label {
+  display: block;
+  margin-bottom: 10px;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: normal;
+}
+
+.budgetcalculatorwbc .budgetcalculatorwbc-details .budgetcalculatorwbc-radio-options {
+  gap: 12px 18px;
+}
+
+.budgetcalculatorwbc .budgetcalculatorwbc-details .budgetcalculatorwbc-radio {
+  gap: 5px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 1px;
+}
+
+.budgetcalculatorwbc .budgetcalculatorwbc-details .budgetcalculatorwbc-radio input:checked + .budgetcalculatorwbc-radio-text {
+  font-weight: inherit;
+}
+
+/* Surface tiles: white cards with a faded icon; the chosen one turns yellow.
+   On phones three square tiles share a row (up to 106px each). */
+.budgetcalculatorwbc .budgetcalculatorwbc-surface-options {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 106px));
+  gap: 10px;
+}
+
+.budgetcalculatorwbc .budgetcalculatorwbc-surface {
+  position: relative;
+  display: block;
+  box-sizing: border-box;
+  aspect-ratio: 1;
+  border-radius: 5px;
+  background: #fff;
+  box-shadow: 0 1px 5px rgb(0 0 0 / 11%);
+  color: #000;
+  text-align: center;
+  cursor: pointer;
+}
+
+.budgetcalculatorwbc .budgetcalculatorwbc-surface-input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: 0;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.budgetcalculatorwbc .budgetcalculatorwbc-surface-icon {
+  position: absolute;
+  top: 40%;
+  left: 50%;
+  width: 41px;
+  height: 37px;
+  transform: translate(-50%, -50%);
+}
+
+.budgetcalculatorwbc .budgetcalculatorwbc-surface-icon img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  opacity: 0.5;
+}
+
+.budgetcalculatorwbc .budgetcalculatorwbc-surface-label {
+  position: absolute;
+  bottom: 8px;
+  left: 0;
+  width: 100%;
+  font-size: 11px;
+  font-weight: 500;
+  line-height: normal;
+  letter-spacing: 1px;
+}
+
+.budgetcalculatorwbc .budgetcalculatorwbc-surface:has(input:checked) {
+  background: linear-gradient(180deg, #ffc63c 0%, #ffa20c 100%);
+  box-shadow: none;
+}
+
+.budgetcalculatorwbc .budgetcalculatorwbc-surface:has(input:checked) .budgetcalculatorwbc-surface-img {
+  opacity: 1;
+}
+
+.budgetcalculatorwbc .budgetcalculatorwbc-surface:has(input:focus-visible) {
+  outline: 2px solid var(--wbc-cream);
+  outline-offset: 2px;
+}
+
+@media (width <= 360px) {
+  .budgetcalculatorwbc .budgetcalculatorwbc-surface-options {
+    gap: 8px;
+  }
+
+  .budgetcalculatorwbc .budgetcalculatorwbc-surface-label {
+    bottom: 6px;
+  }
+
+  .budgetcalculatorwbc .budgetcalculatorwbc-details .budgetcalculatorwbc-radio {
+    font-size: 10px;
+  }
+}
+
+.budgetcalculatorwbc .budgetcalculatorwbc-area-input {
+  box-sizing: border-box;
+  width: 100%;
+  height: 44px;
+  padding: 10px 12px;
+  border: 1px solid #fff;
+  border-radius: 6px;
+  background: rgb(255 255 255 / 20%);
+  box-shadow: 0 1px 2px rgb(16 24 40 / 5%);
+  color: #fff;
+  font: inherit;
+  font-size: 16px;
+}
+
+.budgetcalculatorwbc .budgetcalculatorwbc-area-input::placeholder {
+  color: #fff;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+/* No browser (black) focus ring: a soft white ring matches the white border. */
+.budgetcalculatorwbc .budgetcalculatorwbc-area-input:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgb(255 255 255 / 45%);
+}
+
+.budgetcalculatorwbc .budgetcalculatorwbc-area-input[aria-invalid='true'] {
+  border-color: #f00;
+}
+
+/* Screen 1's CTA is outlined in white; it fills yellow on hover and while
+   it loads. */
+.budgetcalculatorwbc .budgetcalculatorwbc-details .budgetcalculatorwbc-cta {
+  justify-self: center;
+  width: auto;
+  height: 44px;
+  margin-top: 8px;
+  border: 1px solid #fff;
+  background: transparent;
+  color: #fff;
+}
+
+.budgetcalculatorwbc .budgetcalculatorwbc-details .budgetcalculatorwbc-cta:disabled {
+  background: transparent;
+}
+
+.budgetcalculatorwbc .budgetcalculatorwbc-details .budgetcalculatorwbc-cta:not(:disabled):hover,
+.budgetcalculatorwbc .budgetcalculatorwbc-details .budgetcalculatorwbc-cta:not(:disabled):focus-visible,
+.budgetcalculatorwbc .budgetcalculatorwbc-details .budgetcalculatorwbc-cta.is-loading:disabled {
+  border-color: transparent;
+  background: linear-gradient(180deg, #ffc63c 0%, #ffa20c 100%);
+  color: #232426;
+}
+
+/* ---- Screen 2: lead form ---- */
+.budgetcalculatorwbc .budgetcalculatorwbc-lead-form {
+  display: grid;
+  gap: 20px;
+}
+
+.budgetcalculatorwbc .budgetcalculatorwbc-fields {
+  display: grid;
+  gap: 20px;
+}
+
+.budgetcalculatorwbc .budgetcalculatorwbc-control {
+  position: relative;
+}
+
+.budgetcalculatorwbc .budgetcalculatorwbc-control input {
+  box-sizing: border-box;
+  width: 100%;
+  height: 56px;
+  padding: 0 15px;
+  border: 1px solid #75787b;
+  border-radius: 6px;
+  background: #fff;
+  color: #303030;
+  font: inherit;
+  font-size: 16px;
+}
+
+.budgetcalculatorwbc .budgetcalculatorwbc-control input::placeholder {
+  color: #75787b;
+}
+
+.budgetcalculatorwbc .budgetcalculatorwbc-control:has(.budgetcalculatorwbc-prefix) input {
+  padding-left: 64px;
+}
+
+.budgetcalculatorwbc .budgetcalculatorwbc-prefix {
+  position: absolute;
+  top: 50%;
+  left: 12px;
+  padding-right: 12px;
+  border-right: 1px solid #c4c4c4;
+  color: #303030;
+  font-size: 16px;
+  transform: translateY(-50%);
+}
+
+/* The field label always sits on the top border, above the placeholder. */
+.budgetcalculatorwbc .budgetcalculatorwbc-float-label {
+  position: absolute;
+  top: 0;
+  left: 12px;
+  padding: 0 5px;
+  border-radius: 2px;
+  background: #fff;
+  color: #555;
+  font-size: 12px;
+  line-height: 1.2;
+  transform: translateY(-50%);
+  pointer-events: none;
+}
+
+.budgetcalculatorwbc .budgetcalculatorwbc-field.is-invalid input {
+  border-color: var(--wbc-red);
+}
+
+.budgetcalculatorwbc .budgetcalculatorwbc-lead .budgetcalculatorwbc-error {
+  color: var(--wbc-red);
+  font-size: 14px;
+}
+
+.budgetcalculatorwbc .budgetcalculatorwbc-lead .budgetcalculatorwbc-mark {
+  color: var(--wbc-red);
+}
+
+/* Field labels keep their asterisk in the label colour. */
+.budgetcalculatorwbc .budgetcalculatorwbc-float-label .budgetcalculatorwbc-mark {
+  color: inherit;
+}
+
+.budgetcalculatorwbc .budgetcalculatorwbc-checkbox {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.budgetcalculatorwbc .budgetcalculatorwbc-checkbox input[type='checkbox'] {
+  width: 18px;
+  height: 18px;
+  margin: 0;
+  accent-color: #fff;
+}
+
+.budgetcalculatorwbc .budgetcalculatorwbc-lead-questions {
+  display: grid;
+  gap: 16px;
+}
+
+.budgetcalculatorwbc .budgetcalculatorwbc-lead .budgetcalculatorwbc-radio-title {
+  margin-bottom: 8px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.budgetcalculatorwbc .budgetcalculatorwbc-lead .budgetcalculatorwbc-radio-options {
+  gap: 8px 16px;
+}
+
+.budgetcalculatorwbc .budgetcalculatorwbc-lead .budgetcalculatorwbc-radio {
+  gap: 6px;
+  font-size: 13px;
+}
+
+.budgetcalculatorwbc .budgetcalculatorwbc-consent {
+  margin: 0;
+  font-size: 11px;
+  line-height: 1.55;
+}
+
+.budgetcalculatorwbc .budgetcalculatorwbc-consent a {
+  color: #4c8dff;
+  text-decoration: underline;
+}
+
+.budgetcalculatorwbc .budgetcalculatorwbc-cta-submit {
+  background: linear-gradient(rgb(254 201 64), rgb(255 153 0));
+  color: #1e1e1e;
+}
+
+/* ---- Screen 3: recommendations ---- */
+.budgetcalculatorwbc .budgetcalculatorwbc-again {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: #fff;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 19.6px;
+  cursor: pointer;
+}
+
+.budgetcalculatorwbc .budgetcalculatorwbc-again::before {
+  content: '\2190';
+  font-size: 20px;
+  font-weight: 400;
+  line-height: 1;
+}
+
+.budgetcalculatorwbc .budgetcalculatorwbc-again:focus-visible {
+  outline: 2px solid var(--wbc-cream);
+  outline-offset: 3px;
+}
+
+.budgetcalculatorwbc .budgetcalculatorwbc-info-column > .budgetcalculatorwbc-again,
+.budgetcalculatorwbc .budgetcalculatorwbc-info-description {
+  display: none;
+}
+
+.budgetcalculatorwbc .budgetcalculatorwbc-info {
+  text-align: center;
+}
+
+.budgetcalculatorwbc .budgetcalculatorwbc-info-title {
+  margin: 0 0 4px;
+  color: #fff;
+  font-size: 20px;
+  font-weight: 700;
+  line-height: 1.2;
+}
+
+.budgetcalculatorwbc .budgetcalculatorwbc-info-title:focus {
+  outline: none;
+}
+
+.budgetcalculatorwbc .budgetcalculatorwbc-info-subtitle {
+  margin: 0;
+  padding: 0 15%;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.4;
+}
+
+.budgetcalculatorwbc .budgetcalculatorwbc-info-description p {
+  margin: 0 0 11px;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 14.4px;
+}
+
+.budgetcalculatorwbc .budgetcalculatorwbc-info-description ul {
+  margin: 5px 0 0;
+  padding-left: 16px;
+}
+
+.budgetcalculatorwbc .budgetcalculatorwbc-info-description li {
+  width: 90%;
+  margin-bottom: 10px;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 16.39px;
+}
+
+/* Carousel: cards stack in one grid cell; mobile nav sits underneath. */
+.budgetcalculatorwbc .budgetcalculatorwbc-carousel {
+  display: grid;
+  grid-template: 'stack stack stack' auto 'prev again next' auto / 36px 1fr 36px;
+  align-items: center;
+  gap: 16px 8px;
+}
+
+/* Every card is positioned in the stack, and the stack is as tall as the
+   tallest card (set from JS), so changing cards never resizes the layout. */
+.budgetcalculatorwbc .budgetcalculatorwbc-stack {
+  --wbc-ease: cubic-bezier(0.22, 0.61, 0.36, 1);
+  --wbc-depth-1: 0.924;
+  --wbc-depth-2: 0.847;
+  --wbc-peek-1: 8px;
+  --wbc-peek-2: 16px;
+
+  grid-area: stack;
+  position: relative;
+  margin-bottom: 16px;
+}
+
+/* Slider arrows: white circle-arrow icons. */
+.budgetcalculatorwbc .budgetcalculatorwbc-nav {
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: center / contain no-repeat;
+  cursor: pointer;
+}
+
+.budgetcalculatorwbc .budgetcalculatorwbc-nav-prev {
+  grid-area: prev;
+  background-image: url('../../icons/pbc-slider-left.svg');
+}
+
+.budgetcalculatorwbc .budgetcalculatorwbc-nav-next {
+  grid-area: next;
+  background-image: url('../../icons/pbc-slider-right.svg');
+}
+
+.budgetcalculatorwbc .budgetcalculatorwbc-nav:focus-visible {
+  outline: 2px solid var(--wbc-cream);
+  outline-offset: 3px;
+}
+
+.budgetcalculatorwbc .budgetcalculatorwbc-nav:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+.budgetcalculatorwbc .budgetcalculatorwbc-carousel.is-single .budgetcalculatorwbc-nav {
+  visibility: hidden;
+}
+
+.budgetcalculatorwbc .budgetcalculatorwbc-mobile-nav {
+  grid-area: again;
+  justify-self: center;
+}
+
+.budgetcalculatorwbc .budgetcalculatorwbc-results-error {
+  margin: 0;
+  padding: 24px;
+  text-align: center;
+}
+
+/* ---- Result card ---- */
+.budgetcalculatorwbc .budgetcalculatorwbc-card {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  box-sizing: border-box;
+  display: grid;
+  grid-template:
+    'title title' auto
+    'media name' auto
+    'media warranty' 1fr
+    'prices prices' auto
+    'view view' auto
+    'disclaimer disclaimer' auto
+    'products products' auto
+    'includes includes' auto
+    'pdf pdf' auto / 57px minmax(0, 1fr);
+  align-content: start;
+  column-gap: 12px;
+  width: min(340px, 100%);
+  padding: 12px;
+  border-radius: 8px;
+  background: #fff;
+  color: #000;
+  box-shadow: 0 4px 24px rgb(0 0 0 / 15%);
+
+  /* Depth comes from scaling around the bottom edge, never from width, so a
+     card's content never re-wraps while it animates. */
+  transform: translate(-50%, 0);
+  transform-origin: 50% 100%;
+  transition:
+    transform 0.45s var(--wbc-ease),
+    opacity 0.35s ease,
+    visibility 0s linear 0s;
+}
+
+.budgetcalculatorwbc .budgetcalculatorwbc-card > * {
+  transition: opacity 0.3s ease 0.15s;
+}
+
+.budgetcalculatorwbc .budgetcalculatorwbc-card[data-position='0'] {
+  z-index: 3;
+}
+
+/* Cards behind the active one show only their edge. */
+.budgetcalculatorwbc .budgetcalculatorwbc-card:not([data-position='0']) {
+  overflow: hidden;
+}
+
+.budgetcalculatorwbc .budgetcalculatorwbc-card:not([data-position='0']) > * {
+  opacity: 0;
+  transition-delay: 0s;
+}
+
+.budgetcalculatorwbc .budgetcalculatorwbc-card[data-position='1'] {
+  z-index: 2;
+  transform: translate(-50%, var(--wbc-peek-1)) scale(var(--wbc-depth-1));
+}
+
+.budgetcalculatorwbc .budgetcalculatorwbc-card[data-position='2'] {
+  z-index: 1;
+  transform: translate(-50%, var(--wbc-peek-2)) scale(var(--wbc-depth-2));
+}
+
+/* Waiting below the stack: a card entering the stack (the next card behind,
+   or the previous card coming back to the front) rises from here, and the
+   card leaving the front sinks back here. */
+.budgetcalculatorwbc .budgetcalculatorwbc-card[data-position='out'] {
+  z-index: 0;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transform: translate(-50%, 56px) scale(var(--wbc-depth-2));
+  transition:
+    transform 0.45s var(--wbc-ease),
+    opacity 0.35s ease,
+    visibility 0s linear 0.45s;
+}
+
+/* While measuring, cards take their natural height. */
+.budgetcalculatorwbc .budgetcalculatorwbc-stack.is-measuring .budgetcalculatorwbc-card {
+  bottom: auto;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .budgetcalculatorwbc .budgetcalculatorwbc-card,
+  .budgetcalculatorwbc .budgetcalculatorwbc-card > *,
+  .budgetcalculatorwbc .budgetcalculatorwbc-card[data-position='out'] {
+    transition: none;
+  }
+}
+
+.budgetcalculatorwbc .budgetcalculatorwbc-card-title {
+  grid-area: title;
+  justify-self: center;
+  margin: 0 0 12px;
+  background: linear-gradient(270deg, #f8a12e 0%, #be2a1d 50.07%, #45216c 98.1%);
+  background-clip: text;
+  color: transparent;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 14.4px;
+}
+
+.budgetcalculatorwbc .budgetcalculatorwbc-card-media {
+  grid-area: media;
+}
+
+.budgetcalculatorwbc .budgetcalculatorwbc-card-media img {
+  display: block;
+  width: 57px;
+  height: 68px;
+  object-fit: contain;
+}
+
+.budgetcalculatorwbc .budgetcalculatorwbc-card-name {
+  grid-area: name;
+  margin: 0 0 4px;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+/* "Get waterproofing with upto 05 Years warranty" */
+.budgetcalculatorwbc .budgetcalculatorwbc-card-warranty {
+  grid-area: warranty;
+  margin: 0;
+  color: #000;
+  font-size: 11px;
+  font-weight: 400;
+  line-height: 15.4px;
+}
+
+.budgetcalculatorwbc .budgetcalculatorwbc-card-warranty.is-empty {
+  visibility: hidden;
+}
+
+.budgetcalculatorwbc .budgetcalculatorwbc-view {
+  color: var(--wbc-link);
+  font-size: 12px;
+  font-weight: 700;
+  text-decoration: none;
+}
+
+.budgetcalculatorwbc .budgetcalculatorwbc-view:hover {
+  text-decoration: underline;
+}
+
+.budgetcalculatorwbc .budgetcalculatorwbc-card > .budgetcalculatorwbc-view {
+  grid-area: view;
+}
+
+.budgetcalculatorwbc .budgetcalculatorwbc-prices {
+  grid-area: prices;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 0 12px;
+  margin: 14px 0 0;
+  font-size: 11px;
+  line-height: 25px;
+}
+
+.budgetcalculatorwbc .budgetcalculatorwbc-prices dt {
+  color: #2f2f2f;
+  font-weight: 400;
+}
+
+.budgetcalculatorwbc .budgetcalculatorwbc-prices dd {
+  margin: 0;
+  color: #000;
+  font-weight: 700;
+  text-align: right;
+}
+
+.budgetcalculatorwbc .budgetcalculatorwbc-card .budgetcalculatorwbc-mark {
+  color: var(--wbc-red);
+}
+
+.budgetcalculatorwbc .budgetcalculatorwbc-products {
+  grid-area: products;
+  min-width: 0;
+}
+
+.budgetcalculatorwbc .budgetcalculatorwbc-products-title {
+  margin: 20px 0 16px;
+  color: #000;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 14.4px;
+}
+
+.budgetcalculatorwbc .budgetcalculatorwbc-products-list {
+  display: flex;
+  gap: 12px;
+  margin: 0;
+  padding: 2px 2px 8px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  list-style: none;
+}
+
+.budgetcalculatorwbc .budgetcalculatorwbc-product {
+  flex: 0 0 124px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  min-height: 143px;
+  padding: 10px 4px;
+  border-radius: 5px;
+  box-shadow: 0 1px 5px 1px rgb(0 0 0 / 10%);
+  text-align: center;
+  scroll-snap-align: start;
+}
+
+.budgetcalculatorwbc .budgetcalculatorwbc-product-name {
+  margin: 0;
+  min-height: 28.8px;
+  color: #2f2f2f;
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 14.4px;
+  text-transform: capitalize;
+}
+
+.budgetcalculatorwbc .budgetcalculatorwbc-product-media {
+  margin-top: auto;
+}
+
+.budgetcalculatorwbc .budgetcalculatorwbc-product-media img {
+  display: block;
+  width: 40px;
+  height: 49px;
+  object-fit: contain;
+}
+
+.budgetcalculatorwbc .budgetcalculatorwbc-disclaimer {
+  grid-area: disclaimer;
+  margin: 12px 0 0;
+  color: #75787b;
+  font-size: 10px;
+  line-height: 11px;
+}
+
+.budgetcalculatorwbc .budgetcalculatorwbc-disclaimer .budgetcalculatorwbc-mark {
+  margin-right: 2px;
+  font-size: 13px;
+}
+
+.budgetcalculatorwbc .budgetcalculatorwbc-card-includes {
+  grid-area: includes;
+  margin-top: 12px;
+  color: #4c4c4c;
+}
+
+.budgetcalculatorwbc .budgetcalculatorwbc-card-includes p {
+  margin: 0 0 5px;
+  color: #4c4c4c;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.budgetcalculatorwbc .budgetcalculatorwbc-card-includes ul {
+  margin: 0;
+  padding-left: 18px;
+}
+
+.budgetcalculatorwbc .budgetcalculatorwbc-card-includes li {
+  margin-bottom: 10px;
+  color: #a5a5a5;
+  font-size: 12px;
+  line-height: 14px;
+}
+
+.budgetcalculatorwbc .budgetcalculatorwbc-card-includes li::marker {
+  color: #4c4c4c;
+}
+
+.budgetcalculatorwbc .budgetcalculatorwbc-card-includes b,
+.budgetcalculatorwbc .budgetcalculatorwbc-card-includes strong {
+  color: #4c4c4c;
+  font-weight: 400;
+}
+
+.budgetcalculatorwbc .budgetcalculatorwbc-pdf {
+  grid-area: pdf;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 5px;
+  margin-top: 12px;
+  padding: 16px 0 4px;
+  border-top: 1px solid #c4c4c4;
+}
+
+.budgetcalculatorwbc .budgetcalculatorwbc-pdf p {
+  flex: 1;
+  margin: 0;
+  color: #000;
+  font-size: 11px;
+  font-weight: 500;
+  line-height: normal;
+}
+
+.budgetcalculatorwbc .budgetcalculatorwbc-pdf-cta {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 16px;
+  border: 1px solid #000;
+  border-radius: 45px;
+  background: transparent;
+  color: #000;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+/* Download icon, used as a mask so it takes the button's text colour. */
+.budgetcalculatorwbc .budgetcalculatorwbc-pdf-icon {
+  flex: 0 0 auto;
+  width: 21px;
+  height: 20px;
+  background: currentcolor;
+  mask: url('../../icons/pbc-download.svg') center / contain no-repeat;
+}
+
+/* On iOS the finished PDF opens from the same button. */
+.budgetcalculatorwbc .budgetcalculatorwbc-pdf-cta.is-ready {
+  border-color: var(--wbc-cta);
+  background: var(--wbc-cta);
+}
+
+.budgetcalculatorwbc .budgetcalculatorwbc-pdf-cta.is-ready .budgetcalculatorwbc-pdf-icon {
+  width: 20px;
+  mask-image: url('../../icons/pbc-arrow.svg');
+  transform: rotate(-45deg);
+}
+
+/* Small loader next to the download icon while the PDF is prepared. */
+.budgetcalculatorwbc .budgetcalculatorwbc-pdf-spinner {
+  display: none;
+  box-sizing: border-box;
+  width: 14px;
+  height: 14px;
+  border: 2px solid rgb(0 0 0 / 20%);
+  border-top-color: #000;
+  border-radius: 50%;
+  animation: budgetcalculatorwbc-spin 0.7s linear infinite;
+}
+
+.budgetcalculatorwbc .budgetcalculatorwbc-pdf-cta.is-loading {
+  cursor: progress;
+}
+
+.budgetcalculatorwbc .budgetcalculatorwbc-pdf-cta.is-loading .budgetcalculatorwbc-pdf-spinner {
+  display: inline-block;
+}
+
+@keyframes budgetcalculatorwbc-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .budgetcalculatorwbc .budgetcalculatorwbc-pdf-spinner {
+    animation-duration: 1.6s;
+  }
+}
+
+.budgetcalculatorwbc .budgetcalculatorwbc-pdf .budgetcalculatorwbc-pdf-error {
+  flex-basis: 100%;
+  color: var(--wbc-red);
+  font-size: 12px;
+}
+
+.budgetcalculatorwbc .budgetcalculatorwbc-pdf .budgetcalculatorwbc-pdf-error:empty {
+  display: none;
+}
+
+/* ---- Desktop ---- */
+@media (width >= 900px) {
+  .budgetcalculatorwbc {
+    background-image: var(--bg-image-desktop);
+  }
+
+  .budgetcalculatorwbc .budgetcalculatorwbc-screen {
+    min-height: 584px;
+    padding: 56px 64px;
+  }
+
+
+  .budgetcalculatorwbc .budgetcalculatorwbc-title {
+    margin-bottom: 40px;
+    font-size: clamp(40px, 4vw, 64px);
+    line-height: 1.1;
+    letter-spacing: -2px;
+  }
+
+  .budgetcalculatorwbc .budgetcalculatorwbc-subtitle {
+    max-width: 660px;
+    font-size: 24px;
+  }
+
+  .budgetcalculatorwbc .budgetcalculatorwbc-cta {
+    justify-self: start;
+    width: auto;
+  }
+
+  /* Screen 1: title and subtitle centred above a centred form column. */
+  .budgetcalculatorwbc[data-screen='1'] .budgetcalculatorwbc-screen[data-screen='1'] {
+    align-content: start;
+    gap: 0;
+    min-height: 637px;
+    padding: 30px 40px;
+  }
+
+  .budgetcalculatorwbc .budgetcalculatorwbc-details .budgetcalculatorwbc-title {
+    margin-bottom: 10px;
+    font-size: 32px;
+    font-weight: 800;
+    line-height: 35.2px;
+    letter-spacing: 0;
+  }
+
+  .budgetcalculatorwbc .budgetcalculatorwbc-details .budgetcalculatorwbc-subtitle {
+    max-width: none;
+    padding: 0;
+    font-size: 16px;
+    line-height: 21.86px;
+  }
+
+  .budgetcalculatorwbc .budgetcalculatorwbc-details-form {
+    justify-self: center;
+    gap: 30px;
+    padding-top: 44px;
+  }
+
+  .budgetcalculatorwbc .budgetcalculatorwbc-details .budgetcalculatorwbc-radio-title,
+  .budgetcalculatorwbc .budgetcalculatorwbc-details .budgetcalculatorwbc-area-label {
+    margin-bottom: 16px;
+    font-size: 16px;
+  }
+
+  .budgetcalculatorwbc .budgetcalculatorwbc-details .budgetcalculatorwbc-radio-options {
+    gap: 12px 50px;
+  }
+
+  .budgetcalculatorwbc .budgetcalculatorwbc-details .budgetcalculatorwbc-radio {
+    gap: 10px;
+    font-size: 16px;
+    font-weight: 500;
+    letter-spacing: 0;
+  }
+
+  .budgetcalculatorwbc .budgetcalculatorwbc-surface-options {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .budgetcalculatorwbc .budgetcalculatorwbc-surface {
+    width: 143px;
+    height: 140px;
+    aspect-ratio: auto;
+  }
+
+  .budgetcalculatorwbc .budgetcalculatorwbc-surface-icon {
+    width: 53px;
+    height: 53px;
+  }
+
+  .budgetcalculatorwbc .budgetcalculatorwbc-surface-label {
+    bottom: 13px;
+    font-size: 12px;
+  }
+
+  .budgetcalculatorwbc .budgetcalculatorwbc-details .budgetcalculatorwbc-area-input {
+    width: 399px;
+  }
+
+  .budgetcalculatorwbc .budgetcalculatorwbc-details .budgetcalculatorwbc-cta {
+    justify-self: start;
+    margin-top: 2px;
+  }
+
+  /* Screen 2 */
+  .budgetcalculatorwbc[data-screen='2'] .budgetcalculatorwbc-screen[data-screen='2'] {
+    grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+    align-items: center;
+    gap: 48px;
+  }
+
+  .budgetcalculatorwbc .budgetcalculatorwbc-lead-form {
+    gap: 24px;
+  }
+
+  .budgetcalculatorwbc .budgetcalculatorwbc-fields {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 38px 28px;
+  }
+
+  .budgetcalculatorwbc .budgetcalculatorwbc-lead-questions {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 24px;
+  }
+
+  .budgetcalculatorwbc .budgetcalculatorwbc-lead .budgetcalculatorwbc-radio-title {
+    font-size: 16px;
+  }
+
+  .budgetcalculatorwbc .budgetcalculatorwbc-lead .budgetcalculatorwbc-radio {
+    font-size: 14px;
+  }
+
+  .budgetcalculatorwbc .budgetcalculatorwbc-cta-submit {
+    justify-self: end;
+  }
+
+  /* Screen 3: info column and a 554px result card, as on the live tool. */
+  .budgetcalculatorwbc[data-screen='3'] .budgetcalculatorwbc-screen[data-screen='3'] {
+    grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+    align-items: start;
+    gap: 24px;
+    min-height: 637px;
+    padding: 14px 40px 40px;
+  }
+
+  .budgetcalculatorwbc .budgetcalculatorwbc-info-column {
+    padding: 10px 0 0 clamp(0px, 7vw - 40px, 100px);
+  }
+
+  .budgetcalculatorwbc .budgetcalculatorwbc-info-column > .budgetcalculatorwbc-again {
+    display: inline-flex;
+  }
+
+  .budgetcalculatorwbc .budgetcalculatorwbc-info {
+    margin-top: 50px;
+    text-align: left;
+  }
+
+  .budgetcalculatorwbc .budgetcalculatorwbc-info-title {
+    max-width: 360px;
+    margin-bottom: 25px;
+    font-size: 32px;
+    font-weight: 800;
+    line-height: 35.2px;
+  }
+
+  /* The subtitle is shown on mobile only, as on the live tool. */
+  .budgetcalculatorwbc .budgetcalculatorwbc-info-subtitle {
+    display: none;
+  }
+
+  .budgetcalculatorwbc .budgetcalculatorwbc-info-description {
+    display: block;
+    max-width: 420px;
+  }
+
+  .budgetcalculatorwbc .budgetcalculatorwbc-info-description p {
+    margin-bottom: 16px;
+    font-size: 12px;
+    font-weight: 400;
+  }
+
+  .budgetcalculatorwbc .budgetcalculatorwbc-info-description li {
+    width: auto;
+    margin-bottom: 14px;
+  }
+
+  .budgetcalculatorwbc .budgetcalculatorwbc-carousel {
+    grid-template: 'prev stack next' auto / 36px minmax(0, 554px) 36px;
+    justify-content: center;
+    gap: 16px 40px;
+  }
+
+  .budgetcalculatorwbc .budgetcalculatorwbc-mobile-nav {
+    display: none;
+  }
+
+  .budgetcalculatorwbc .budgetcalculatorwbc-card {
+    grid-template:
+      'title title' auto
+      'media name' auto
+      'media warranty' auto
+      'media prices' auto
+      'media view' auto
+      'products products' auto
+      'disclaimer disclaimer' auto
+      'pdf pdf' auto / 103px minmax(0, 1fr);
+    column-gap: 60px;
+    width: min(554px, 100%);
+    min-height: 509px;
+    padding: 20px 30px 10px;
+  }
+
+  /* 513px and 491px behind a 554px card, as on the live tool. */
+  .budgetcalculatorwbc .budgetcalculatorwbc-stack {
+    --wbc-depth-1: 0.926;
+    --wbc-depth-2: 0.886;
+  }
+
+  .budgetcalculatorwbc .budgetcalculatorwbc-card-title {
+    margin-bottom: 20px;
+    font-size: 16px;
+    font-weight: 800;
+    line-height: 20px;
+  }
+
+  .budgetcalculatorwbc .budgetcalculatorwbc-card-media img {
+    width: 103px;
+    height: 124px;
+  }
+
+  .budgetcalculatorwbc .budgetcalculatorwbc-card-name {
+    margin: 10px 0 4px;
+    font-size: 20px;
+  }
+
+  .budgetcalculatorwbc .budgetcalculatorwbc-card-warranty {
+    margin-bottom: 14px;
+    font-size: 12px;
+    font-weight: 500;
+    line-height: normal;
+  }
+
+  .budgetcalculatorwbc .budgetcalculatorwbc-prices {
+    margin: 0;
+    font-size: 12px;
+  }
+
+  .budgetcalculatorwbc .budgetcalculatorwbc-prices dt {
+    font-weight: 500;
+  }
+
+  .budgetcalculatorwbc .budgetcalculatorwbc-products-title {
+    margin: 24px 0 16px;
+  }
+
+  /* Up to four tiles share the row, shrinking from 124px to fit. */
+  .budgetcalculatorwbc .budgetcalculatorwbc-products-list {
+    gap: 20px;
+    overflow: visible;
+  }
+
+  .budgetcalculatorwbc .budgetcalculatorwbc-product {
+    flex: 0 1 124px;
+    min-width: 0;
+  }
+
+  .budgetcalculatorwbc .budgetcalculatorwbc-disclaimer {
+    margin-top: 14px;
+    padding: 0 6px 6px;
+    border-bottom: 1px solid #c4c4c4;
+    font-size: 11px;
+    line-height: normal;
+  }
+
+  .budgetcalculatorwbc .budgetcalculatorwbc-card-includes {
+    display: none;
+  }
+
+  .budgetcalculatorwbc .budgetcalculatorwbc-pdf {
+    gap: 16px;
+    margin-top: 0;
+    padding: 19px 0;
+    border-top: 0;
+  }
+
+  .budgetcalculatorwbc .budgetcalculatorwbc-pdf p {
+    font-size: 12px;
+  }
+
+  .budgetcalculatorwbc .budgetcalculatorwbc-pdf-cta {
+    padding: 10px 25px;
+    font-size: 16px;
+  }
+}
