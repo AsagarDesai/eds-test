@@ -534,10 +534,7 @@
   content: '';
   width: 22px;
   height: 22px;
-  border-radius: 4px;
-  background:
-    radial-gradient(circle, #000080 0 2px, transparent 2.5px),
-    linear-gradient(#f93 0 34%, #fff 34% 66%, #138808 66%);
+  background: url('../../icons/wbc-flag-india.svg') center / contain no-repeat;
 }
 
 /* Field label, shown on the top border (see below for when). */
