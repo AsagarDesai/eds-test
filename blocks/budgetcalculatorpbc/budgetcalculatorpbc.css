@@ -327,7 +327,7 @@
   transform: translateY(-50%);
 }
 
-/* The field label always sits on the top border, above the placeholder. */
+/* Field label, shown on the top border (see below for when). */
 .budgetcalculatorpbc .budgetcalculatorpbc-float-label {
   position: absolute;
   top: 0;
@@ -338,8 +338,18 @@
   color: #555;
   font-size: 12px;
   line-height: 1.2;
+  opacity: 0;
   transform: translateY(-50%);
   pointer-events: none;
+  transition: opacity 0.15s ease;
+}
+
+/* The label appears on the top border while the field is focused, once it
+   has a value, and while it shows an error. */
+.budgetcalculatorpbc .budgetcalculatorpbc-field.is-invalid .budgetcalculatorpbc-float-label,
+.budgetcalculatorpbc .budgetcalculatorpbc-control:focus-within .budgetcalculatorpbc-float-label,
+.budgetcalculatorpbc .budgetcalculatorpbc-control:has(input:not(:placeholder-shown)) .budgetcalculatorpbc-float-label {
+  opacity: 1;
 }
 
 .budgetcalculatorpbc .budgetcalculatorpbc-field.is-invalid input {
