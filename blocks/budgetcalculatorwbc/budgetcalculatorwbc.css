@@ -50,6 +50,7 @@
 .budgetcalculatorwbc[data-screen='3'] .budgetcalculatorwbc-screen[data-screen='3'] {
   display: grid;
   gap: 24px;
+  background: rgb(0 0 0 / 30%);
 }
 
 .budgetcalculatorwbc .budgetcalculatorwbc-sr-only {
@@ -76,6 +77,7 @@
 }
 
 .budgetcalculatorwbc .budgetcalculatorwbc-highlight {
+  display: block;
   color: var(--wbc-cream);
   font-weight: inherit;
 }
@@ -391,10 +393,12 @@
   font-weight: 500;
 }
 
-/* No browser (black) focus ring: a soft white ring matches the white border. */
-.budgetcalculatorwbc .budgetcalculatorwbc-area-input:focus {
+/* No focus ring: the white border stays as it is. */
+.budgetcalculatorwbc .budgetcalculatorwbc-area-input:focus,
+.budgetcalculatorwbc .budgetcalculatorwbc-area-input:focus-visible {
+  border: 1px solid #fff;
   outline: none;
-  box-shadow: 0 0 0 2px rgb(255 255 255 / 45%);
+  box-shadow: none;
 }
 
 .budgetcalculatorwbc .budgetcalculatorwbc-area-input[aria-invalid='true'] {
@@ -425,29 +429,64 @@
   color: #232426;
 }
 
-/* ---- Screen 2: lead form ---- */
+/* ---- Screen 2: lead form (the AEM WBC form: a white card on the banner) ---- */
+.budgetcalculatorwbc .budgetcalculatorwbc-lead {
+  padding: 24px 8px 32px;
+}
+
+.budgetcalculatorwbc .budgetcalculatorwbc-lead .budgetcalculatorwbc-intro {
+  text-align: center;
+}
+
+.budgetcalculatorwbc .budgetcalculatorwbc-lead .budgetcalculatorwbc-title {
+  margin-bottom: 4px;
+  color: #fff;
+  font-size: 20px;
+  font-weight: 700;
+  line-height: normal;
+  letter-spacing: 0;
+}
+
+/* The whole title reads as one white line here. */
+.budgetcalculatorwbc .budgetcalculatorwbc-lead .budgetcalculatorwbc-highlight {
+  display: inline;
+  color: inherit;
+}
+
+.budgetcalculatorwbc .budgetcalculatorwbc-lead .budgetcalculatorwbc-subtitle {
+  padding: 0 10%;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: normal;
+}
+
 .budgetcalculatorwbc .budgetcalculatorwbc-lead-form {
   display: grid;
-  gap: 20px;
+  gap: 15px;
+  padding: 24px 12px 20px;
+  border-radius: 8px;
+  background: #fff;
+  color: #000;
 }
 
 .budgetcalculatorwbc .budgetcalculatorwbc-fields {
   display: grid;
-  gap: 20px;
+  gap: 18px;
 }
 
 .budgetcalculatorwbc .budgetcalculatorwbc-control {
   position: relative;
 }
 
+/* Grey while empty; white with a dark border once focused or filled. */
 .budgetcalculatorwbc .budgetcalculatorwbc-control input {
   box-sizing: border-box;
   width: 100%;
   height: 56px;
   padding: 0 15px;
-  border: 1px solid #75787b;
+  border: 1px solid #c4c4c4;
   border-radius: 6px;
-  background: #fff;
+  background: #f9f9f9;
   color: #303030;
   font: inherit;
   font-size: 16px;
@@ -457,19 +496,48 @@
   color: #75787b;
 }
 
+.budgetcalculatorwbc .budgetcalculatorwbc-control input:focus,
+.budgetcalculatorwbc .budgetcalculatorwbc-control input:focus-visible,
+.budgetcalculatorwbc .budgetcalculatorwbc-control input:not(:placeholder-shown) {
+  border-color: #303030;
+  outline: none;
+  background: #fff;
+  box-shadow: none;
+}
+
+.budgetcalculatorwbc .budgetcalculatorwbc-field.is-invalid input {
+  border-color: var(--wbc-red);
+  background: #fff;
+}
+
+/* +91 with the Indian flag, then a divider. */
 .budgetcalculatorwbc .budgetcalculatorwbc-control:has(.budgetcalculatorwbc-prefix) input {
-  padding-left: 64px;
+  padding-left: 96px;
 }
 
 .budgetcalculatorwbc .budgetcalculatorwbc-prefix {
   position: absolute;
   top: 50%;
-  left: 12px;
+  left: 15px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
   padding-right: 12px;
   border-right: 1px solid #c4c4c4;
   color: #303030;
   font-size: 16px;
+  line-height: 24px;
   transform: translateY(-50%);
+}
+
+.budgetcalculatorwbc .budgetcalculatorwbc-prefix::before {
+  content: '';
+  width: 22px;
+  height: 22px;
+  border-radius: 4px;
+  background:
+    radial-gradient(circle, #000080 0 2px, transparent 2.5px),
+    linear-gradient(#f93 0 34%, #fff 34% 66%, #138808 66%);
 }
 
 /* Field label, shown on the top border (see below for when). */
@@ -479,8 +547,10 @@
   left: 12px;
   padding: 0 5px;
   border-radius: 2px;
+  border-top-left-radius: 5px;
+  border-top-right-radius: 5px;
   background: #fff;
-  color: #555;
+  color: #75787b;
   font-size: 12px;
   line-height: 1.2;
   opacity: 0;
@@ -497,13 +567,9 @@
   opacity: 1;
 }
 
-.budgetcalculatorwbc .budgetcalculatorwbc-field.is-invalid input {
-  border-color: var(--wbc-red);
-}
-
 .budgetcalculatorwbc .budgetcalculatorwbc-lead .budgetcalculatorwbc-error {
   color: var(--wbc-red);
-  font-size: 14px;
+  font-size: 12px;
 }
 
 .budgetcalculatorwbc .budgetcalculatorwbc-lead .budgetcalculatorwbc-mark {
@@ -515,56 +581,126 @@
   color: inherit;
 }
 
+/* WhatsApp opt-in: a small grey box with a white tick. */
 .budgetcalculatorwbc .budgetcalculatorwbc-checkbox {
   display: inline-flex;
   align-items: center;
-  gap: 10px;
-  font-size: 14px;
-  font-weight: 600;
+  justify-self: start;
+  gap: 8px;
+  color: #4c4e52;
+  font-size: 13px;
+  font-weight: 700;
   cursor: pointer;
 }
 
 .budgetcalculatorwbc .budgetcalculatorwbc-checkbox input[type='checkbox'] {
-  width: 18px;
-  height: 18px;
+  appearance: none;
+  flex: 0 0 16px;
+  width: 16px;
+  height: 16px;
   margin: 0;
-  accent-color: #fff;
+  border: 1px solid #75787b;
+  border-radius: 2px;
+  background: transparent;
+  cursor: pointer;
+}
+
+.budgetcalculatorwbc .budgetcalculatorwbc-checkbox input[type='checkbox']:checked {
+  background: #75787b url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M2.5 6.2 5 8.6l4.6-5' fill='none' stroke='%23fff' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / 12px 12px no-repeat;
+}
+
+.budgetcalculatorwbc .budgetcalculatorwbc-checkbox input[type='checkbox']:focus-visible {
+  outline: 2px solid #75787b;
+  outline-offset: 2px;
 }
 
 .budgetcalculatorwbc .budgetcalculatorwbc-lead-questions {
   display: grid;
-  gap: 16px;
+  gap: 15px;
 }
 
 .budgetcalculatorwbc .budgetcalculatorwbc-lead .budgetcalculatorwbc-radio-title {
-  margin-bottom: 8px;
-  font-size: 14px;
+  margin-bottom: 0;
+  color: #000;
+  font-size: 12px;
   font-weight: 600;
+  line-height: 24px;
+  letter-spacing: 0.2px;
 }
 
 .budgetcalculatorwbc .budgetcalculatorwbc-lead .budgetcalculatorwbc-radio-options {
-  gap: 8px 16px;
+  gap: 6px 10px;
 }
 
 .budgetcalculatorwbc .budgetcalculatorwbc-lead .budgetcalculatorwbc-radio {
-  gap: 6px;
-  font-size: 13px;
+  gap: 5px;
+  color: #323232;
+  font-size: 11px;
+  line-height: 20px;
+}
+
+.budgetcalculatorwbc .budgetcalculatorwbc-lead .budgetcalculatorwbc-radio input:not(:checked) + .budgetcalculatorwbc-radio-text {
+  opacity: 0.6;
+}
+
+/* Radios: a grey ring; checked is an orange dot inside an orange ring. */
+.budgetcalculatorwbc .budgetcalculatorwbc-lead .budgetcalculatorwbc-radio input[type='radio'] {
+  width: 14px;
+  height: 14px;
+  border: 1.5px solid #bdbdbd;
+  background: transparent;
+}
+
+.budgetcalculatorwbc .budgetcalculatorwbc-lead .budgetcalculatorwbc-radio input[type='radio']:checked {
+  border: 3px solid #fff;
+  outline: 1.5px solid #f47838;
+  background: #f47838;
+}
+
+.budgetcalculatorwbc .budgetcalculatorwbc-lead .budgetcalculatorwbc-radio input:checked + .budgetcalculatorwbc-radio-text {
+  color: #3b3d40;
+  font-weight: 600;
 }
 
 .budgetcalculatorwbc .budgetcalculatorwbc-consent {
   margin: 0;
-  font-size: 11px;
-  line-height: 1.55;
+  color: #4c4e52;
+  font-size: 10px;
+  line-height: 1.7;
 }
 
 .budgetcalculatorwbc .budgetcalculatorwbc-consent a {
-  color: #4c8dff;
+  color: #1d4fd8;
   text-decoration: underline;
 }
 
 .budgetcalculatorwbc .budgetcalculatorwbc-cta-submit {
-  background: linear-gradient(rgb(254 201 64), rgb(255 153 0));
-  color: #1e1e1e;
+  justify-self: center;
+  width: auto;
+  height: 44px;
+  padding: 0 24px;
+  background: linear-gradient(180deg, #ffc63c 0%, #ffa20c 100%);
+  color: #232426;
+  letter-spacing: 0.5px;
+}
+
+/* On phones the WhatsApp opt-in follows the questions, as on the live form. */
+@media (width < 900px) {
+  .budgetcalculatorwbc .budgetcalculatorwbc-lead-questions {
+    order: 1;
+  }
+
+  .budgetcalculatorwbc .budgetcalculatorwbc-checkbox {
+    order: 2;
+  }
+
+  .budgetcalculatorwbc .budgetcalculatorwbc-consent {
+    order: 3;
+  }
+
+  .budgetcalculatorwbc .budgetcalculatorwbc-cta-submit {
+    order: 4;
+  }
 }
 
 /* ---- Screen 3: recommendations ---- */
@@ -1013,7 +1149,7 @@
   flex: 1;
   margin: 0;
   color: #000;
-  font-size: 11px;
+  font-size: 10px;
   font-weight: 500;
   line-height: normal;
 }
@@ -1203,37 +1339,78 @@
     margin-top: 2px;
   }
 
-  /* Screen 2 */
+  /* Screen 2: title and subtitle centred above a 918px white form card. */
   .budgetcalculatorwbc[data-screen='2'] .budgetcalculatorwbc-screen[data-screen='2'] {
-    grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
-    align-items: center;
-    gap: 48px;
+    grid-template-columns: minmax(0, 918px);
+    place-content: start center;
+    gap: 30px;
+    padding: 24px 40px 40px;
+  }
+
+  .budgetcalculatorwbc .budgetcalculatorwbc-lead .budgetcalculatorwbc-title {
+    margin-bottom: 8px;
+    font-size: 32px;
+    font-weight: 800;
+    line-height: 40px;
+  }
+
+  .budgetcalculatorwbc .budgetcalculatorwbc-lead .budgetcalculatorwbc-subtitle {
+    max-width: none;
+    padding: 0;
+    font-size: 16px;
+    line-height: 21.86px;
   }
 
   .budgetcalculatorwbc .budgetcalculatorwbc-lead-form {
-    gap: 24px;
+    gap: 25px;
+    padding: 38px 70px 30px;
   }
 
   .budgetcalculatorwbc .budgetcalculatorwbc-fields {
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 38px 28px;
+    gap: 37px 24px;
+  }
+
+  .budgetcalculatorwbc .budgetcalculatorwbc-checkbox {
+    font-weight: 400;
   }
 
   .budgetcalculatorwbc .budgetcalculatorwbc-lead-questions {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 24px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 15px 60px;
   }
 
   .budgetcalculatorwbc .budgetcalculatorwbc-lead .budgetcalculatorwbc-radio-title {
-    font-size: 16px;
+    margin-bottom: 6px;
+    font-size: 14px;
+    line-height: 19px;
+  }
+
+  .budgetcalculatorwbc .budgetcalculatorwbc-lead .budgetcalculatorwbc-radio-options {
+    gap: 8px 20px;
   }
 
   .budgetcalculatorwbc .budgetcalculatorwbc-lead .budgetcalculatorwbc-radio {
-    font-size: 14px;
+    font-size: 13px;
+  }
+
+  .budgetcalculatorwbc .budgetcalculatorwbc-lead .budgetcalculatorwbc-radio input[type='radio'] {
+    width: 16px;
+    height: 16px;
+  }
+
+  .budgetcalculatorwbc .budgetcalculatorwbc-lead .budgetcalculatorwbc-radio input:checked + .budgetcalculatorwbc-radio-text {
+    font-weight: 500;
+  }
+
+  .budgetcalculatorwbc .budgetcalculatorwbc-consent {
+    font-size: 11px;
+    line-height: 24px;
   }
 
   .budgetcalculatorwbc .budgetcalculatorwbc-cta-submit {
-    justify-self: end;
+    justify-self: center;
   }
 
   /* Screen 3: info column and a 554px result card, as on the live tool. */
@@ -1260,7 +1437,7 @@
 
   .budgetcalculatorwbc .budgetcalculatorwbc-info-title {
     max-width: 360px;
-    margin-bottom: 25px;
+    margin-bottom: 15px;
     font-size: 32px;
     font-weight: 800;
     line-height: 35.2px;
@@ -1280,6 +1457,7 @@
     margin-bottom: 16px;
     font-size: 12px;
     font-weight: 400;
+    letter-spacing: 0.5px;
   }
 
   .budgetcalculatorwbc .budgetcalculatorwbc-info-description li {
